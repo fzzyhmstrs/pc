@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+  "name": "Particle Core",
+  "description": "TODO",
+  "authors": [
+    "fzzyhmstrs"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/particle-core",
+    "issues": "https://github.com/fzzyhmstrs/pc/issues",
+    "sources": "https://github.com/fzzyhmstrs/pc"
+  },
+  "license": "MIT License",
+  "icon": "assets/${id}/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+    ],
+    "client": [
+    ]
+  },
+  "mixins": [
+    "particle_core.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loaderVersion}",
+    "fabric": "*",
+    "fabric-key-binding-api-v1": "*",
+    "fabric-language-kotlin": ">=${fabricKotlinVersion}",
+    "minecraft": ">=1.20.1",
+    "java": ">=17"
+  }
+}

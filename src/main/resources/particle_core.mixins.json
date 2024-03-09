@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "me.fzzyhmstrs.particle_core.mixins",
+  "compatibilityLevel": "JAVA_16",
+  "plugin": "me.fzzyhmstrs.particle_core.plugin.PcMixinPlugin",
+  "mixins": [
+    "FrustumAccessor",
+    "ParticleAccessor"
+  ],
+  "client": [
+    "BillboardParticleMixin",
+    "ParticleManagerMixin",
+    "ParticleMixin",
+    "WorldRendererMixin"
+  ],
+  "server": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
