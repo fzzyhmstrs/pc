@@ -1,12 +1,12 @@
 package me.fzzyhmstrs.particle_core.mixins;
 
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import me.fallenbreath.conditionalmixin.api.annotation.Condition;
 import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import me.fzzyhmstrs.particle_core.interfaces.RotationProvider;
+import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.BillboardParticle;
 import net.minecraft.client.particle.Particle;
@@ -21,6 +21,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Restriction(
+        require = {
+                @Condition(type = Condition.Type.TESTER, tester = PcConditionTester.class)
+        },
         conflict = {
                 @Condition("sodium")
         }

@@ -36,10 +36,10 @@ repositories {
             includeGroupByRegex("io\\.github\\.onyxstudios.*")
         }
     }*/
-    /*maven {
-        name = "Patchouli Lib"
-        url = uri("https://maven.blamejared.com")
-    }*/
+    maven {
+        name = "FallenBreath"
+        url = uri("https://maven.fallenbreath.me/releases")
+    }
     maven {
         name = "Modrinth"
         url = uri("https://api.modrinth.com/maven")
@@ -88,8 +88,8 @@ dependencies {
     }
 
     val cmVersion: String by project
-    implementation("com.github.Fallen-Breath:conditional-mixin:$cmVersion")
-    include("com.github.Fallen-Breath:conditional-mixin:$cmVersion")
+    implementation("me.fallenbreath:conditional-mixin:$cmVersion")
+    include("me.fallenbreath:conditional-mixin:$cmVersion")
 
     /*val acVersion: String by project
     modImplementation(":amethyst_core-$acVersion"){

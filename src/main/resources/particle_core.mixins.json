@@ -9,9 +9,14 @@
   ],
   "client": [
     "BillboardParticleMixin",
-    "ParticleManagerMixin",
+    "LivingEntityMixin",
+    "ParticleManagerCachedLightMixin",
+    "ParticleManagerFrustumMixin",
+    "ParticleManagerRotationMixin",
     "ParticleMixin",
-    "WorldRendererMixin"
+    "WorldRendererFrustumMixin",
+    "WorldRendererDecreaseMixin",
+    "WorldRendererTypeMixin"
   ],
   "server": [
   ],
