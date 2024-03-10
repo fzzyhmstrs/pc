@@ -86,6 +86,7 @@ dependencies {
     modImplementation(":fzzy_config-$fzzyConfigVersion"){
         exclude("net.fabricmc.fabric-api")
     }
+    include(":fzzy_config-$fzzyConfigVersion")
 
     val cmVersion: String by project
     implementation("me.fallenbreath:conditional-mixin:$cmVersion")

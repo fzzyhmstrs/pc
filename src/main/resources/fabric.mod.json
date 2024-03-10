@@ -26,10 +26,8 @@
   ],
   "depends": {
     "fabricloader": ">=${loaderVersion}",
-    "fabric": "*",
-    "fabric-key-binding-api-v1": "*",
     "fabric-language-kotlin": ">=${fabricKotlinVersion}",
-    "minecraft": ">=1.20.1",
+    "minecraft": ">=1.20",
     "java": ">=17"
   }
 }
