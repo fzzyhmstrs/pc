@@ -4,8 +4,6 @@
   "compatibilityLevel": "JAVA_16",
   "plugin": "me.fzzyhmstrs.particle_core.plugin.PcMixinPlugin",
   "mixins": [
-    "FrustumAccessor",
-    "ParticleAccessor"
   ],
   "client": [
     "BillboardParticleMixin",
@@ -16,7 +14,9 @@
     "ParticleMixin",
     "WorldRendererFrustumMixin",
     "WorldRendererDecreaseMixin",
-    "WorldRendererTypeMixin"
+    "WorldRendererTypeMixin",
+    "FrustumAccessor",
+    "ParticleAccessor"
   ],
   "server": [
   ],

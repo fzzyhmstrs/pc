@@ -3,7 +3,7 @@
   "id": "${id}",
   "version": "${version}",
   "name": "Particle Core",
-  "description": "TODO",
+  "description": "Particle optimizations. Particle culling, rendering optimization, and configurable disabling of particles.",
   "authors": [
     "fzzyhmstrs"
   ],
@@ -14,7 +14,7 @@
   },
   "license": "MIT License",
   "icon": "assets/${id}/icon.png",
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
     "main": [
     ],

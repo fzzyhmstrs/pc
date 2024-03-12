@@ -4,6 +4,8 @@ import me.fallenbreath.conditionalmixin.api.annotation.Condition;
 import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import me.fzzyhmstrs.particle_core.interfaces.CachedLightProvider;
 import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -18,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.HashMap;
 
+@Environment(EnvType.CLIENT)
 @Restriction(
         require = {
                 @Condition(type = Condition.Type.TESTER, tester = PcConditionTester.class)
