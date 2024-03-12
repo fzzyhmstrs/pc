@@ -16,7 +16,7 @@ import net.minecraft.util.Identifier
 import java.util.function.BiPredicate
 
 @Environment(EnvType.CLIENT)
-class PcConfigImpl: ConfigClass(), OldClass<PcConfigImpl> {
+class PcConfigImpl: OldClass<PcConfigImpl> {
 
     var _comments = PcConfig.Comment()
 
