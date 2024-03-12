@@ -34,6 +34,7 @@ public class WorldRendererTypeMixin {
 
     @Inject(method = "spawnParticle(Lnet/minecraft/particle/ParticleEffect;ZZDDDDDD)Lnet/minecraft/client/particle/Particle;", at = @At("HEAD"), cancellable = true)
     private void particle_core_excludeAndChanceParticles(ParticleEffect parameters, boolean alwaysSpawn, boolean canSpawnOnMinimal, double x, double y, double z, double velocityX, double velocityY, double velocityZ, CallbackInfoReturnable<Particle> cir){
+        if (PcConfig.INSTANCE.getImpl().getDisableParticles().get()) cir.setReturnValue(null);
         if(Registries.PARTICLE_TYPE.getEntry(parameters.getType()).isIn(tag)) cir.setReturnValue(null);
         if(!PcConfig.INSTANCE.getImpl().shouldSpawnParticle(parameters.getType())) cir.setReturnValue(null);
     }

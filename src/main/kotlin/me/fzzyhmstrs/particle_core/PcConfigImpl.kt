@@ -2,6 +2,7 @@ package me.fzzyhmstrs.particle_core
 
 import me.fzzyhmstrs.fzzy_config.config_util.ConfigClass
 import me.fzzyhmstrs.fzzy_config.interfaces.OldClass
+import me.fzzyhmstrs.fzzy_config.validated_field.ValidatedBoolean
 import me.fzzyhmstrs.fzzy_config.validated_field.ValidatedEnum
 import me.fzzyhmstrs.fzzy_config.validated_field.ValidatedFloat
 import me.fzzyhmstrs.fzzy_config.validated_field.list.ValidatedStringList
@@ -24,6 +25,8 @@ class PcConfigImpl: ConfigClass(), OldClass<PcConfigImpl> {
     var reduceParticlesAllChance = ValidatedFloat(0f,1f,0f)
 
     var reduceParticlesDecreasedChance = ValidatedFloat(0f,1f,0f)
+
+    var disableParticles = ValidatedBoolean(false)
 
     var reduceParticlesByType: ValidatedStringDoubleMap = ValidatedStringDoubleMap(mapOf(), BiPredicate { id, d -> Identifier.tryParse(id) != null && d >= 0.0 && d <= 1.0 }, "Invalid identifier, or chance outside of bounds [0.0, 1.0]")
 
@@ -101,6 +104,7 @@ class PcConfigImpl: ConfigClass(), OldClass<PcConfigImpl> {
     }
 
     override fun generateNewClass(): PcConfigImpl {
+        this._comments = PcConfig.Comment()
         return this
     }
 
