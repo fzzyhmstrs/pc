@@ -6,7 +6,7 @@ import java.io.File
 
 object PcDisable {
 
-    private val gson = Gson().newBuilder().setPrettyPrinting().create()
+    private val gson = Gson().newBuilder().setPrettyPrinting().setLenient().create()
 
     private fun getDisabledMixinsConfig(): String {
         val file = File(FabricLoader.getInstance().configDir.toFile(),"particle_core_disabled_optimizations.json")
@@ -15,11 +15,11 @@ object PcDisable {
             file.writeText(text)
             text
         } else {
-            file.readLines().joinToString { "\n" }
+            file.readLines().joinToString("")
         }
     }
 
-    var disabledOptimizations = gson.fromJson(getDisabledMixinsConfig(),DisabledOptimizations::class.java)
+    var disabledOptimizations = try{ gson.fromJson(getDisabledMixinsConfig(),DisabledOptimizations::class.java) } catch (e: Exception){ e.printStackTrace(); DisabledOptimizations() }
 
     class DisabledOptimizations{
         var _Disable_Optimizations_Options = mapOf(
