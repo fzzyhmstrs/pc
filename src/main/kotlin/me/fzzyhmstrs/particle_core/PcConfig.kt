@@ -1,22 +1,15 @@
 package me.fzzyhmstrs.particle_core
 
-import me.fzzyhmstrs.fzzy_config.config_util.SyncedConfigHelperV1
+import me.fzzyhmstrs.fzzy_config.api.ConfigApi
+import me.fzzyhmstrs.fzzy_config.api.RegisterType
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
-import net.minecraft.resource.ResourceManager
 import net.minecraft.resource.ResourceType
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.random.Random
 @Environment(EnvType.CLIENT)
-object PcConfig: SimpleSynchronousResourceReloadListener {
-
-    fun register() {
-        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(PcConfig)
-    }
-
-
+object PcConfig {
     internal val validOptimizationStrings = listOf(
         "ROTATION",
         "CULLING",
@@ -32,7 +25,7 @@ object PcConfig: SimpleSynchronousResourceReloadListener {
         impl.reduceParticlesByType.mapKeys { Identifier(it.key) }
     }
 
-    var impl = SyncedConfigHelperV1.readOrCreateUpdatedAndValidate("particle_core_config_v1.json","particle_core_config_v0.json", base = "", configClass = {PcConfigImpl()}, previousClass = {PcConfigImpl()})
+    var impl: PcConfigImpl = ConfigApi.registerAndLoadConfig({ PcConfigImpl() }, RegisterType.CLIENT)
 
     enum class PotionDisableType(val index: Int){
         NONE(0),
@@ -59,13 +52,4 @@ object PcConfig: SimpleSynchronousResourceReloadListener {
             "LIGHTMAP" to "[Impact: Medium] Disables mixins related to light map caching (ParticleManagerCachedLightMixin, ParticleMixin)",
             "POTION" to "[Impact: Low] Disables mixins related to potion particle disabling (LivingEntityMixin)")
     }
-
-    override fun reload(manager: ResourceManager) {
-        impl = SyncedConfigHelperV1.readOrCreateUpdatedAndValidate("particle_core_config_v1.json","particle_core_config_v0.json", base = "", configClass = {PcConfigImpl()}, previousClass = {PcConfigImpl()})
-    }
-
-    override fun getFabricId(): Identifier {
-        return Identifier("particle_core","config_reloader")
-    }
-
 }

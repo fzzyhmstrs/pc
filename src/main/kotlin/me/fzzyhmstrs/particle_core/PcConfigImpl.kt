@@ -1,12 +1,14 @@
 package me.fzzyhmstrs.particle_core
 
-import me.fzzyhmstrs.fzzy_config.config_util.ConfigClass
-import me.fzzyhmstrs.fzzy_config.interfaces.OldClass
-import me.fzzyhmstrs.fzzy_config.validated_field.ValidatedBoolean
-import me.fzzyhmstrs.fzzy_config.validated_field.ValidatedEnum
-import me.fzzyhmstrs.fzzy_config.validated_field.ValidatedFloat
-import me.fzzyhmstrs.fzzy_config.validated_field.list.ValidatedStringList
-import me.fzzyhmstrs.fzzy_config.validated_field.map.ValidatedStringDoubleMap
+import me.fzzyhmstrs.fzzy_config.annotations.ConvertFrom
+import me.fzzyhmstrs.fzzy_config.config.Config
+import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedList
+import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedStringMap
+import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean
+import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedEnum
+import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString
+import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedDouble
+import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.option.ParticlesMode
@@ -16,11 +18,12 @@ import net.minecraft.util.Identifier
 import java.util.function.BiPredicate
 
 @Environment(EnvType.CLIENT)
-class PcConfigImpl: OldClass<PcConfigImpl> {
+@ConvertFrom("particle_core_config_v1.json")
+class PcConfigImpl: Config(Identifier("particle_core","particle_core_config"),"","") {
 
     var _comments = PcConfig.Comment()
 
-    var turnOffPotionParticles = ValidatedEnum(PcConfig.PotionDisableType.NONE, PcConfig.PotionDisableType::class.java)
+    var turnOffPotionParticles = ValidatedEnum(PcConfig.PotionDisableType.NONE)
 
     var reduceParticlesAllChance = ValidatedFloat(0f,1f,0f)
 
@@ -28,9 +31,13 @@ class PcConfigImpl: OldClass<PcConfigImpl> {
 
     var disableParticles = ValidatedBoolean(false)
 
-    var reduceParticlesByType: ValidatedStringDoubleMap = ValidatedStringDoubleMap(mapOf(), BiPredicate { id, d -> Identifier.tryParse(id) != null && d >= 0.0 && d <= 1.0 }, "Invalid identifier, or chance outside of bounds [0.0, 1.0]")
+    var reduceParticlesByType = ValidatedStringMap(mapOf(), ValidatedString(), ValidatedDouble(1.0,1.0,0.0))
 
-    var disableOptimizations: ValidatedStringList = ValidatedStringList(listOf(),{s -> PcConfig.validOptimizationStrings.contains(s)}, "Invalid optimization-disable key, skipping! Consult the comments section for appropriate inputs")
+    var disableOptimizations = ValidatedString.Builder("")
+        .both({ PcConfig.validOptimizationStrings.contains(it) }, "Not in optimizations disabling list")
+        .withCorrector()
+        .both({ PcConfig.validOptimizationStrings.contains(it) }, "Not in optimizations disabling list")
+        .build().toList()
 
     fun shouldDisableMixin(className: String): Boolean{
         if(disableOptimizations.contains("ROTATION")){
@@ -102,10 +109,4 @@ class PcConfigImpl: OldClass<PcConfigImpl> {
         }
         return outMode
     }
-
-    override fun generateNewClass(): PcConfigImpl {
-        this._comments = PcConfig.Comment()
-        return this
-    }
-
 }

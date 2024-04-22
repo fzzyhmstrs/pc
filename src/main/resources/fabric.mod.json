@@ -19,10 +19,6 @@
     "main": [
     ],
     "client": [
-      {
-        "adapter": "kotlin",
-        "value": "me.fzzyhmstrs.particle_core.PcConfig::register"
-      }
     ]
   },
   "mixins": [
@@ -32,6 +28,7 @@
     "fabricloader": ">=${loaderVersion}",
     "fabric-language-kotlin": ">=${fabricKotlinVersion}",
     "minecraft": ">=1.20",
-    "java": ">=17"
+    "java": ">=17",
+    "fzzy_config": ">=${fzzyConfigVersion}"
   }
 }
