@@ -124,8 +124,6 @@ tasks {
     }
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions { jvmTarget = javaVersion.toString() }
-        sourceCompatibility = javaVersion.toString()
-        targetCompatibility = javaVersion.toString()
     }
 
     jar {
@@ -138,16 +136,19 @@ tasks {
     processResources {
         val loaderVersion: String by project
         val fabricKotlinVersion: String by project
+        val fzzyConfigVersion: String by project
         inputs.property("version", project.version)
         inputs.property("id", base.archivesName.get())
         inputs.property("loaderVersion", loaderVersion)
         inputs.property("fabricKotlinVersion", fabricKotlinVersion)
+        inputs.property("fzzyConfigVersion",fzzyConfigVersion)
         filesMatching("fabric.mod.json") {
             expand(mutableMapOf(
                 "version" to project.version,
                 "id" to base.archivesName.get(),
                 "loaderVersion" to loaderVersion,
-                "fabricKotlinVersion" to fabricKotlinVersion)
+                "fabricKotlinVersion" to fabricKotlinVersion,
+                "fzzyConfigVersion" to fzzyConfigVersion)
             )
         }
     }
