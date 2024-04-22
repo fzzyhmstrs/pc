@@ -4,12 +4,11 @@ import me.fzzyhmstrs.fzzy_config.api.ConfigApi
 import me.fzzyhmstrs.fzzy_config.api.RegisterType
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper
-import net.minecraft.resource.ResourceType
 import net.minecraft.util.Identifier
-import net.minecraft.util.math.random.Random
+
 @Environment(EnvType.CLIENT)
 object PcConfig {
+
     internal val validOptimizationStrings = listOf(
         "ROTATION",
         "CULLING",
@@ -18,8 +17,6 @@ object PcConfig {
         "LIGHTMAP",
         "POTION"
     )
-
-    internal val random = Random.createLocal()
 
     internal val byTypeParticleReduction: Map<Identifier, Double> by lazy {
         impl.reduceParticlesByType.mapKeys { Identifier(it.key) }
@@ -34,7 +31,7 @@ object PcConfig {
         ALL(3)
     }
 
-    class Comment{
+    class Comment {
         var PotionParticles_Allowed_Values = mapOf(
             "NONE" to "(no particles removed)",
             "SELF" to "(only your own particles removed)",

@@ -30,5 +30,10 @@
     "minecraft": ">=1.20",
     "java": ">=17",
     "fzzy_config": ">=${fzzyConfigVersion}"
+  },
+  "custom": {
+    "fzzy_config": [
+      "particle_core"
+    ]
   }
 }
