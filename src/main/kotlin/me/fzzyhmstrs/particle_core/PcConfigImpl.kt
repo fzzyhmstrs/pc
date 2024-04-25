@@ -2,10 +2,10 @@ package me.fzzyhmstrs.particle_core
 
 import me.fzzyhmstrs.fzzy_config.annotations.ConvertFrom
 import me.fzzyhmstrs.fzzy_config.config.Config
-import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedStringMap
+import me.fzzyhmstrs.fzzy_config.validation.collection.ValidatedIdentifierMap
+import me.fzzyhmstrs.fzzy_config.validation.minecraft.ValidatedIdentifier
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedEnum
-import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedString
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedDouble
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat
 import net.fabricmc.api.EnvType
@@ -21,13 +21,13 @@ class PcConfigImpl: Config(Identifier("particle_core","particle_core_config"),""
 
     var turnOffPotionParticles = ValidatedEnum(PcConfig.PotionDisableType.NONE)
 
-    var reduceParticlesAllChance = ValidatedFloat(0f,1f,0f)
+    var reduceAllChance = ValidatedFloat(0f,1f,0f)
 
-    var reduceParticlesDecreasedChance = ValidatedFloat(0f,1f,0f)
+    var reduceDecreasedChance = ValidatedFloat(0f,1f,0f)
 
     var disableParticles = ValidatedBoolean(false)
 
-    var reduceParticlesByType = ValidatedStringMap(mapOf(), ValidatedString(), ValidatedDouble(1.0,1.0,0.0))
+    var byTypeReductions = ValidatedIdentifierMap(mapOf(), ValidatedIdentifier.ofRegistry(Identifier("smoke"), Registries.PARTICLE_TYPE), ValidatedDouble(1.0,1.0,0.0))
 
     fun shouldSpawnParticle(type: ParticleType<*>): Boolean{
         val chance = PcConfig.byTypeParticleReduction[Registries.PARTICLE_TYPE.getId(type) ?: return true] ?: return true
@@ -37,12 +37,12 @@ class PcConfigImpl: Config(Identifier("particle_core","particle_core_config"),""
     fun getReducedParticleSpawnType(mode: ParticlesMode): ParticlesMode{
         var outMode = mode
         if (outMode == ParticlesMode.ALL){
-            if (PcUtils.random.nextFloat() < reduceParticlesAllChance.get()){
+            if (PcUtils.random.nextFloat() < reduceAllChance.get()){
                 outMode = ParticlesMode.DECREASED
             }
         }
         if (outMode == ParticlesMode.DECREASED){
-            if (PcUtils.random.nextFloat() < reduceParticlesDecreasedChance.get()){
+            if (PcUtils.random.nextFloat() < reduceDecreasedChance.get()){
                 outMode = ParticlesMode.MINIMAL
             }
         }

@@ -2,6 +2,7 @@ package me.fzzyhmstrs.particle_core
 
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi
 import me.fzzyhmstrs.fzzy_config.api.RegisterType
+import me.fzzyhmstrs.fzzy_config.util.EnumTranslatable
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.util.Identifier
@@ -18,17 +19,21 @@ object PcConfig {
         "POTION"
     )
 
-    internal val byTypeParticleReduction: Map<Identifier, Double> by lazy {
-        impl.reduceParticlesByType.mapKeys { Identifier(it.key) }
-    }
+    internal val byTypeParticleReduction: Map<Identifier, Double>
+        get() = impl.byTypeReductions
+
 
     var impl: PcConfigImpl = ConfigApi.registerAndLoadConfig({ PcConfigImpl() }, RegisterType.CLIENT)
 
-    enum class PotionDisableType(val index: Int){
+    enum class PotionDisableType(val index: Int): EnumTranslatable{
         NONE(0),
         SELF(1),
         PLAYER(2),
-        ALL(3)
+        ALL(3);
+
+        override fun prefix(): String {
+            return "particle_core.particle_core_config"
+        }
     }
 
     class Comment {
