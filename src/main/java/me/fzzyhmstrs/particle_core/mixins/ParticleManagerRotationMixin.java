@@ -54,7 +54,7 @@ public class ParticleManagerRotationMixin implements RotationProvider {
     }
 
     @Inject(method = "renderParticles", at = @At("HEAD"))
-    private void particle_core_setupDefaultRotations(MatrixStack matrices, VertexConsumerProvider.Immediate vertexConsumers, LightmapTextureManager lightmapTextureManager, Camera camera, float tickDelta, CallbackInfo ci){
+    private void particle_core_setupDefaultRotations(LightmapTextureManager lightmapTextureManager, Camera camera, float tickDelta, CallbackInfo ci){
         particle_core_setupDefaultBillboardVectors(camera);
     }
 }
