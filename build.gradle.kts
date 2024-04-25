@@ -1,8 +1,15 @@
+import com.matthewprenger.cursegradle.CurseArtifact
+import com.matthewprenger.cursegradle.CurseProject
+import com.matthewprenger.cursegradle.CurseRelation
+import com.matthewprenger.cursegradle.Options
+import org.jetbrains.kotlin.cli.common.toBooleanLenient
+
 plugins {
     id("fabric-loom")
     val kotlinVersion: String by System.getProperties()
     kotlin("jvm").version(kotlinVersion)
     id("com.modrinth.minotaur") version "2.+"
+    id("com.matthewprenger.cursegradle") version "1.4.0"
 }
 base {
     val archivesBaseName: String by project
@@ -158,30 +165,78 @@ tasks {
         targetCompatibility = javaVersion
         //withSourcesJar()
     }
+
+    modrinth.get().group = "upload"
+    modrinthSyncBody.get().group = "upload"
 }
 
-modrinth {
-    val modrinthSlugName: String by project
-    val mcVersions: String by project
-    token.set(System.getenv("MODRINTH_TOKEN"))
-    projectId.set(modrinthSlugName)
-    versionNumber.set(modVersion)
-    versionName.set("${base.archivesName.get()}-$modVersion")
-    versionType.set("release")
-    uploadFile.set(tasks.remapJar.get())
-    gameVersions.addAll(mcVersions.split(","))
-    loaders.addAll("fabric","quilt")
-    detectLoaders.set(false)
-    changelog.set("## Changelog for Amethyst Imbuement $modVersion \n\n" + log.readText())
-    dependencies{
-        required.project("fabric-api")
-        required.project("fabric-language-kotlin")
-        //required.project("amethyst-core")
-        //required.project("fzzy-core")
-        //required.project("gear-core")
-        //optional.project("emi")
-        //embedded.project("trinkets")
-        //embedded.project("patchouli")
+if (System.getenv("MODRINTH_TOKEN") != null) {
+    modrinth {
+        val releaseType: String by project
+        val mcVersions: String by project
+        val uploadDebugMode: String by project
+
+        token.set(System.getenv("MODRINTH_TOKEN"))
+        projectId.set("particle-core")
+        versionNumber.set(modVersion)
+        versionName.set("${base.archivesName.get()}-$modVersion")
+        versionType.set(releaseType)
+        uploadFile.set(tasks.remapJar.get())
+        gameVersions.addAll(mcVersions.split(","))
+        loaders.addAll("fabric", "quilt")
+        detectLoaders.set(false)
+        changelog.set(log.readText())
+        dependencies {
+            required.project("fabric-api")
+            required.project("fabric-language-kotlin")
+            required.project("fzzy-config")
+        }
+        debugMode.set(uploadDebugMode.toBooleanLenient() ?: true)
     }
-    debugMode.set(true)
+}
+
+if (System.getenv("CURSEFORGE_TOKEN") != null) {
+    curseforge {
+        val releaseType: String by project
+        val mcVersions: String by project
+        val uploadDebugMode: String by project
+
+        apiKey = System.getenv("CURSEFORGE_TOKEN")
+        project(closureOf<CurseProject> {
+            id = "985426"
+            changelog = log
+            changelogType = "markdown"
+            this.releaseType = releaseType
+            for (ver in mcVersions.split(",")){
+                addGameVersion(ver)
+            }
+            addGameVersion("Fabric")
+            addGameVersion("Quilt")
+            mainArtifact(tasks.remapJar.get().archiveFile.get(), closureOf<CurseArtifact> {
+                displayName = "${base.archivesName.get()}-$modVersion"
+                relations(closureOf<CurseRelation>{
+                    this.requiredDependency("fabric-api")
+                    this.requiredDependency("fabric-language-kotlin")
+                    this.requiredDependency("fzzy-config")
+                })
+            })
+            relations(closureOf<CurseRelation>{
+                this.requiredDependency("fabric-api")
+                this.requiredDependency("fabric-language-kotlin")
+                this.requiredDependency("fzzy-config")
+            })
+        })
+        options(closureOf<Options> {
+            javaIntegration = false
+            forgeGradleIntegration = false
+            javaVersionAutoDetect = false
+            debug = uploadDebugMode.toBooleanLenient() ?: true
+        })
+    }
+}
+
+tasks.register("uploadAll") {
+    group = "upload"
+    dependsOn(tasks.modrinth.get())
+    dependsOn(tasks.curseforge.get())
 }
