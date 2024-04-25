@@ -175,9 +175,10 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
         val releaseType: String by project
         val mcVersions: String by project
         val uploadDebugMode: String by project
+        val modrinthSlugName: String by project
 
         token.set(System.getenv("MODRINTH_TOKEN"))
-        projectId.set("particle-core")
+        projectId.set(modrinthSlugName)
         versionNumber.set(modVersion)
         versionName.set("${base.archivesName.get()}-$modVersion")
         versionType.set(releaseType)
