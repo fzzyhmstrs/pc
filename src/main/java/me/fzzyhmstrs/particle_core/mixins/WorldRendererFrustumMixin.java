@@ -29,7 +29,7 @@ public class WorldRendererFrustumMixin {
 
     @Shadow @Final private MinecraftClient client;
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "net/minecraft/client/particle/ParticleManager.renderParticles (Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/client/render/Camera;F)V"))
+    @Inject(method = "render", at = @At(value = "CONSTANT", args = "stringValue=clear"), require = 0)
     private void particle_core_passFrustumToParticleManager(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f projectionMatrix, CallbackInfo ci, @Local Frustum frustum){
         ((FrustumProvider)this.client.particleManager).particle_core_setFrustum(frustum);
     }

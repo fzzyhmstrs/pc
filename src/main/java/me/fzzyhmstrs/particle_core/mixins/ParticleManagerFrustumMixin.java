@@ -36,6 +36,7 @@ public class ParticleManagerFrustumMixin implements FrustumProvider {
     @WrapWithCondition(method = "renderParticles", at = @At(value = "INVOKE", target = "net/minecraft/client/particle/Particle.buildGeometry (Lnet/minecraft/client/render/VertexConsumer;Lnet/minecraft/client/render/Camera;F)V"))
     private boolean particle_core_cullParticles(Particle instance, VertexConsumer vertexConsumer, Camera camera, float v){
         //return frustum.isVisible(instance.getBoundingBox());
+        if (frustum == null) return true; //fallback if the frustum is being deleted for some reason
         return ((FrustumAccessor)frustum).getFrustumIntersection().testPoint(
                 (float)(((ParticleAccessor)instance).getX() - ((FrustumAccessor)frustum).getX()),
                 (float)(((ParticleAccessor)instance).getY() - ((FrustumAccessor)frustum).getY()),
