@@ -66,6 +66,8 @@ dependencies {
     implementation("me.fallenbreath:conditional-mixin:$cmVersion")
     include("me.fallenbreath:conditional-mixin:$cmVersion")
 
+    runtimeOnly("net.peanuuutz.tomlkt:tomlkt:0.3.7")
+    runtimeOnly("blue.endless:jankson:1.2.3")
 }
 
 tasks {

@@ -17,7 +17,7 @@ import net.minecraft.util.Identifier
 
 @Environment(EnvType.CLIENT)
 @ConvertFrom("particle_core_config_v1.json")
-class PcConfigImpl: Config(Identifier("particle_core","particle_core_config"),"","") {
+class PcConfigImpl: Config(Identifier.of("particle_core","particle_core_config"),"","") {
 
     var turnOffPotionParticles = ValidatedEnum(PcConfig.PotionDisableType.NONE)
 
@@ -27,7 +27,7 @@ class PcConfigImpl: Config(Identifier("particle_core","particle_core_config"),""
 
     var disableParticles = ValidatedBoolean(false)
 
-    var byTypeReductions = ValidatedIdentifierMap(mapOf(), ValidatedIdentifier.ofRegistry(Identifier("smoke"), Registries.PARTICLE_TYPE), ValidatedDouble(1.0,1.0,0.0))
+    var byTypeReductions = ValidatedIdentifierMap(mapOf(), ValidatedIdentifier.ofRegistry(Identifier.of("smoke"), Registries.PARTICLE_TYPE), ValidatedDouble(1.0,1.0,0.0))
 
     fun shouldSpawnParticle(type: ParticleType<*>): Boolean{
         val chance = PcConfig.byTypeParticleReduction[Registries.PARTICLE_TYPE.getId(type) ?: return true] ?: return true
