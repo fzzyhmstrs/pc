@@ -1,8 +1,8 @@
 ### Additions
-* Port to 1.21.
+* None
 
 ### Changes
 * None
 
 ### Fixes
-* None
+* Fix config not opening from main menu screen.

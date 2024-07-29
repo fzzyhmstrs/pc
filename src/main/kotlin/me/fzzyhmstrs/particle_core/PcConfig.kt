@@ -3,12 +3,13 @@ package me.fzzyhmstrs.particle_core
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi
 import me.fzzyhmstrs.fzzy_config.api.RegisterType
 import me.fzzyhmstrs.fzzy_config.util.EnumTranslatable
+import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.util.Identifier
 
 @Environment(EnvType.CLIENT)
-object PcConfig {
+object PcConfig: ClientModInitializer {
 
     internal val validOptimizationStrings = listOf(
         "ROTATION",
@@ -53,5 +54,8 @@ object PcConfig {
             "DECREASE" to "[Impact: Low] Disables mixins related particle settings reduction (ALL, DECREASED, MINIMAL) (WorldRendererDecreaseMixin)",
             "LIGHTMAP" to "[Impact: Medium] Disables mixins related to light map caching (ParticleManagerCachedLightMixin, ParticleMixin)",
             "POTION" to "[Impact: Low] Disables mixins related to potion particle disabling (LivingEntityMixin)")
+    }
+
+    override fun onInitializeClient() {
     }
 }
