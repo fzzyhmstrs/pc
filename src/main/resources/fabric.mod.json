@@ -19,6 +19,10 @@
     "main": [
     ],
     "client": [
+      {
+        "adapter": "kotlin",
+        "value": "me.fzzyhmstrs.particle_core.PcConfig"
+      }
     ]
   },
   "mixins": [
