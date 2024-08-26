@@ -1,0 +1,11 @@
+{
+  "particle_core.particle_core_config.NONE.desc": "不會停用任何藥水粒子",
+  "particle_core.particle_core_config.SELF.desc": "將停用你發出的藥水粒子",
+  "particle_core.particle_core_config.PLAYER.desc": "將停用所有玩家（包括你）發出的藥水粒子",
+  "particle_core.particle_core_config.ALL.desc": "將停用所有藥水粒子",
+  "particle_core.particle_core_config.turnOffPotionParticles.desc": "根據選取的內容，以不同程度停用藥水粒子。",
+  "particle_core.particle_core_config.reduceAllChance.desc": "[0.0 到 1.0 之間的值 ] 在「全部」模式下減少粒子。例如： 0.1 將使 10% 的粒子減少。基本上是在「全部」和「減少」之間的刻度盤。",
+  "particle_core.particle_core_config.reduceDecreasedChance.desc": "[0.0 到 1.0 之間的值 ] 在「減少」模式下減少粒子。例如： 0.1 將使 10% 的粒子變為最小。基本上是在「減少」和「最小」之間的刻度盤。",
+  "particle_core.particle_core_config.disableParticles.desc": "[true 或 false ] 完全關閉用戶端上的所有粒子。",
+  "particle_core.particle_core_config.byTypeReductions.desc": "允許減少／停用個別的粒子類型。例如： 將 'minecraft:smoke' 設定為 0.3 將導致煙霧和營火粒子的生成率為正常值的 30%。"
+}
