@@ -38,10 +38,10 @@ public class ParticleManagerRotationMixin implements RotationProvider {
 
     @Override
     public void particle_core_setupDefaultBillboardVectors(Camera camera) {
-        vectors[0][0] = (new Vector3f(-1.0f, -1.0f, 0.0f)).rotate(camera.getRotation());
-        vectors[0][2] = (new Vector3f(-1.0f, 1.0f, 0.0f)).rotate(camera.getRotation());
-        vectors[2][0] = (new Vector3f(1.0f, -1.0f, 0.0f)).rotate(camera.getRotation());
-        vectors[2][2] = (new Vector3f(1.0f, 1.0f, 0.0f)).rotate(camera.getRotation());
+        vectors[0][0].set(-1.0f, -1.0f, 0.0f).rotate(camera.getRotation());
+        vectors[0][2].set(-1.0f, 1.0f, 0.0f).rotate(camera.getRotation());
+        vectors[2][0].set(1.0f, -1.0f, 0.0f).rotate(camera.getRotation());
+        vectors[2][2].set(1.0f, 1.0f, 0.0f).rotate(camera.getRotation());
     }
 
     @Inject(method = "renderParticles", at = @At("HEAD"))
