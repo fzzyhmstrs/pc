@@ -1,6 +1,6 @@
 package me.fzzyhmstrs.particle_core.mixins;
 
-import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import me.fallenbreath.conditionalmixin.api.annotation.Condition;
 import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import me.fzzyhmstrs.particle_core.interfaces.CachedLightProvider;
@@ -31,10 +31,10 @@ import java.util.HashMap;
 public class ParticleManagerCachedLightMixin implements CachedLightProvider {
 
     @Unique
-    private final Object2IntLinkedOpenHashMap<BlockPos> cachedLightMap = new Object2IntLinkedOpenHashMap<>(64, 0.75f);
+    private final Object2IntOpenHashMap<BlockPos> cachedLightMap = new Object2IntOpenHashMap<>(64, 0.75f);
 
     @Override
-    public Object2IntLinkedOpenHashMap<BlockPos> particle_core_getCache() {
+    public Object2IntOpenHashMap<BlockPos> particle_core_getCache() {
         return cachedLightMap;
     }
 
