@@ -2,7 +2,7 @@
 * None
 
 ### Changes
-* None
+* Improvements to lightmap caching and rotation optimization
 
 ### Fixes
-* Fix config not opening from main menu screen.
+* None
