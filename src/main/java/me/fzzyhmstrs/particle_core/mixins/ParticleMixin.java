@@ -26,7 +26,7 @@ public class ParticleMixin {
 
     @WrapOperation(method = "getBrightness", at = @At(value = "INVOKE", target = "net/minecraft/client/render/WorldRenderer.getLightmapCoordinates (Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/util/math/BlockPos;)I"))
     private int particle_core_getCachedBrightness(BlockRenderView world, BlockPos pos, Operation<Integer> original) {
-        return ((CachedLightProvider) MinecraftClient.getInstance().particleManager).particle_core_getCache().computeIfAbsent(pos,(p) -> original.call(world,p));
+        return ((CachedLightProvider) MinecraftClient.getInstance().particleManager).particle_core_getCache().computeIfAbsent(pos, (p) -> original.call(world, p));
     }
 
 }

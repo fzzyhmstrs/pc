@@ -94,7 +94,7 @@ tasks {
         inputs.property("id", base.archivesName.get())
         inputs.property("loaderVersion", loaderVersion)
         inputs.property("fabricKotlinVersion", fabricKotlinVersion)
-        inputs.property("fzzyConfigVersion",fzzyConfigVersion)
+        inputs.property("fzzyConfigVersion", fzzyConfigVersion)
         filesMatching("fabric.mod.json") {
             expand(mutableMapOf(
                 "version" to project.version,
