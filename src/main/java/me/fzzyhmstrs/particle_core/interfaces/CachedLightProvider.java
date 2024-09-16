@@ -6,6 +6,6 @@ import java.util.HashMap;
 
 public interface CachedLightProvider {
 
-    HashMap<BlockPos,Integer> particle_core_getCache();
+    HashMap<BlockPos, Integer> particle_core_getCache();
 
 }

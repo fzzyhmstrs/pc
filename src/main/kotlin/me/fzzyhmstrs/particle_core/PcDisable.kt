@@ -1,7 +1,7 @@
 package me.fzzyhmstrs.particle_core
 
 import com.google.gson.Gson
-import net.fabricmc.loader.api.FabricLoader
+import net.neoforged.fml.loading.FMLPaths
 import java.io.File
 
 object PcDisable {
@@ -9,8 +9,8 @@ object PcDisable {
     private val gson = Gson().newBuilder().setPrettyPrinting().setLenient().create()
 
     private fun getDisabledMixinsConfig(): String {
-        val file = File(FabricLoader.getInstance().configDir.toFile(),"particle_core_disabled_optimizations.json")
-        return if (!file.exists()){
+        val file = File(FMLPaths.CONFIGDIR.get().toFile(), "particle_core_disabled_optimizations.json")
+        return if (!file.exists()) {
             val text = gson.toJson(DisabledOptimizations())
             file.writeText(text)
             text
@@ -19,12 +19,11 @@ object PcDisable {
         }
     }
 
-    var disabledOptimizations = try{ gson.fromJson(getDisabledMixinsConfig(),DisabledOptimizations::class.java) } catch (e: Exception){ e.printStackTrace(); DisabledOptimizations() }
+    var disabledOptimizations = try{ gson.fromJson(getDisabledMixinsConfig(), DisabledOptimizations::class.java) } catch (e: Exception){ e.printStackTrace(); DisabledOptimizations() }
 
-    class DisabledOptimizations{
+    class DisabledOptimizations {
         var _Disable_Optimizations_Options = mapOf(
             "ROTATION" to "[Impact: Medium] Disables mixins related to vertex rotation caching (ParticleManagerRotationMixin, BillboardParticleMixin)",
-            "CULLING" to "[Impact: High] Disables mixins related to particle culling (FrustumAccessor, ParticleAccessor, ParticleManagerFrustumMixin, WorldRendererFrustumMixin)",
             "TYPE" to "[Impact: Low to Medium] Disables mixins related to particle disabling and reduction (WorldRendererTypeMixin)",
             "DECREASE" to "[Impact: Low] Disables mixins related particle settings reduction (ALL, DECREASED, MINIMAL) (WorldRendererDecreaseMixin)",
             "LIGHTMAP" to "[Impact: Medium] Disables mixins related to light map caching (ParticleManagerCachedLightMixin, ParticleMixin)",
@@ -32,8 +31,8 @@ object PcDisable {
 
         var disableOptimizations = listOf<String>("NONE")
 
-        fun shouldDisableMixin(className: String): Boolean{
-            if(disableOptimizations.contains("ROTATION")){
+        fun shouldDisableMixin(className: String): Boolean {
+            if(disableOptimizations.contains("ROTATION")) {
                 if (className.endsWith("ParticleManagerRotationMixin")
                     || className.endsWith("BillboardParticleMixin"))
                 {
@@ -41,7 +40,7 @@ object PcDisable {
                     return true
                 }
             }
-            if(disableOptimizations.contains("CULLING")){
+            if(disableOptimizations.contains("CULLING")) {
                 if (className.endsWith("FrustumAccessor")
                     || className.endsWith("ParticleAccessor")
                     || className.endsWith("ParticleManagerFrustumMixin")
@@ -51,21 +50,21 @@ object PcDisable {
                     return true
                 }
             }
-            if(disableOptimizations.contains("TYPE")){
+            if(disableOptimizations.contains("TYPE")) {
                 if (className.endsWith("WorldRendererTypeMixin"))
                 {
                     println("Disabling [$className] due to 'TYPE' key in particle core config!")
                     return true
                 }
             }
-            if(disableOptimizations.contains("DECREASE")){
+            if(disableOptimizations.contains("DECREASE")) {
                 if (className.endsWith("WorldRendererDecreaseMixin"))
                 {
                     println("Disabling [$className] due to 'DECREASE' key in particle core config!")
                     return true
                 }
             }
-            if(disableOptimizations.contains("LIGHTMAP")){
+            if(disableOptimizations.contains("LIGHTMAP")) {
                 if (className.endsWith("ParticleManagerCachedLightMixin")
                     || className.endsWith("ParticleMixin"))
                 {
@@ -73,7 +72,7 @@ object PcDisable {
                     return true
                 }
             }
-            if(disableOptimizations.contains("POTION")){
+            if(disableOptimizations.contains("POTION")) {
                 if (className.endsWith("LivingEntityMixin"))
                 {
                     println("Disabling [$className] due to 'POTION' key in particle core config!")

@@ -1,21 +1,17 @@
 {
   "required": true,
   "package": "me.fzzyhmstrs.particle_core.mixins",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_21",
   "plugin": "me.fzzyhmstrs.particle_core.plugin.PcMixinPlugin",
   "mixins": [
   ],
   "client": [
     "LivingEntityMixin",
     "ParticleManagerCachedLightMixin",
-    "ParticleManagerFrustumMixin",
     "ParticleManagerRotationMixin",
     "ParticleMixin",
-    "WorldRendererFrustumMixin",
     "WorldRendererDecreaseMixin",
-    "WorldRendererTypeMixin",
-    "FrustumAccessor",
-    "ParticleAccessor"
+    "WorldRendererTypeMixin"
   ],
   "server": [
   ],

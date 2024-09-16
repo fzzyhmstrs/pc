@@ -3,9 +3,10 @@ import com.matthewprenger.cursegradle.CurseProject
 import com.matthewprenger.cursegradle.CurseRelation
 import com.matthewprenger.cursegradle.Options
 import org.jetbrains.kotlin.cli.common.toBooleanLenient
+import java.net.URI
 
 plugins {
-    id("fabric-loom")
+    id("dev.architectury.loom")
     val kotlinVersion: String by System.getProperties()
     kotlin("jvm").version(kotlinVersion)
     id("com.modrinth.minotaur") version "2.+"
@@ -35,6 +36,12 @@ repositories {
         }
     }
     maven {
+        url = URI("https://maven.neoforged.net/releases")
+    }
+    maven {
+        url = URI("https://thedarkcolour.github.io/KotlinForForge/")
+    }
+    maven {
         name = "Jitpack"
         url = uri("https://jitpack.io")
     }
@@ -46,13 +53,16 @@ dependencies {
     val minecraftVersion: String by project
     minecraft("com.mojang:minecraft:$minecraftVersion")
     val yarnMappings: String by project
-    mappings("net.fabricmc:yarn:$yarnMappings:v2")
+    val yarnMappingsPatchVersion: String by project
+    mappings( loom.layered {
+        mappings("net.fabricmc:yarn:$yarnMappings:v2")
+        mappings("dev.architectury:yarn-mappings-patch-neoforge:$yarnMappingsPatchVersion")
+    })
     val loaderVersion: String by project
-    modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
-    val fabricVersion: String by project
-    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
-    val fabricKotlinVersion: String by project
-    modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
+    neoForge("net.neoforged:neoforge:$loaderVersion")
+
+    val kotlinForForgeVersion: String by project
+    modImplementation("thedarkcolour:kotlinforforge-neoforge:$kotlinForForgeVersion")
 
     val fzzyConfigVersion: String by project
     modImplementation("maven.modrinth:fzzy-config:$fzzyConfigVersion") {
@@ -60,8 +70,8 @@ dependencies {
     }
 
     val cmVersion: String by project
-    implementation("me.fallenbreath:conditional-mixin:$cmVersion")
-    include("me.fallenbreath:conditional-mixin:$cmVersion")
+    implementation("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-neoforge:$cmVersion")
+    include("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-neoforge:$cmVersion")
 
     runtimeOnly("net.peanuuutz.tomlkt:tomlkt:0.3.7")
     runtimeOnly("blue.endless:jankson:1.2.3")
@@ -87,21 +97,10 @@ tasks {
     }
 
     processResources {
-        val loaderVersion: String by project
-        val fabricKotlinVersion: String by project
-        val fzzyConfigVersion: String by project
         inputs.property("version", project.version)
-        inputs.property("id", base.archivesName.get())
-        inputs.property("loaderVersion", loaderVersion)
-        inputs.property("fabricKotlinVersion", fabricKotlinVersion)
-        inputs.property("fzzyConfigVersion",fzzyConfigVersion)
-        filesMatching("fabric.mod.json") {
+        filesMatching("META-INF/neoforge.mods.toml") {
             expand(mutableMapOf(
-                "version" to project.version,
-                "id" to base.archivesName.get(),
-                "loaderVersion" to loaderVersion,
-                "fabricKotlinVersion" to fabricKotlinVersion,
-                "fzzyConfigVersion" to fzzyConfigVersion)
+                "version" to project.version)
             )
         }
     }

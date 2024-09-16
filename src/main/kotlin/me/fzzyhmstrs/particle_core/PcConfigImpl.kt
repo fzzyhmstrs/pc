@@ -8,22 +8,19 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedEnum
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedDouble
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat
-import net.fabricmc.api.EnvType
-import net.fabricmc.api.Environment
 import net.minecraft.client.option.ParticlesMode
 import net.minecraft.particle.ParticleType
 import net.minecraft.registry.Registries
 import net.minecraft.util.Identifier
 
-@Environment(EnvType.CLIENT)
 @ConvertFrom("particle_core_config_v1.json")
-class PcConfigImpl: Config(Identifier.of("particle_core","particle_core_config"),"","") {
+class PcConfigImpl: Config(Identifier.of("particle_core","particle_core_config"), "","") {
 
     var turnOffPotionParticles = ValidatedEnum(PcConfig.PotionDisableType.NONE)
 
-    var reduceAllChance = ValidatedFloat(0f,1f,0f)
+    var reduceAllChance = ValidatedFloat(0f, 1f, 0f)
 
-    var reduceDecreasedChance = ValidatedFloat(0f,1f,0f)
+    var reduceDecreasedChance = ValidatedFloat(0f, 1f, 0f)
 
     var disableParticles = ValidatedBoolean(false)
 
