@@ -33,24 +33,24 @@ public class ParticleManagerRotationMixin implements RotationProvider {
     @Unique
     private final Vector3f[] vectors = new Vector3f[]{new Vector3f(-1.0f, -1.0f, 0.0f), new Vector3f(-1.0f, 1.0f, 0.0f), new Vector3f(1.0f, 1.0f, 0.0f), new Vector3f(1.0f, -1.0f, 0.0f)};
 
+    @Unique
+    private final Vector3f[] perParticleVectors = new Vector3f[]{new Vector3f(-1.0f, -1.0f, 0.0f), new Vector3f(-1.0f, 1.0f, 0.0f), new Vector3f(1.0f, 1.0f, 0.0f), new Vector3f(1.0f, -1.0f, 0.0f)};
+
     @Override
     public Vector3f[] particle_core_getDefaultBillboardVectors() {
-        return new Vector3f[]{
-                new Vector3f(vectors[0].x, vectors[0].y, vectors[0].z),
-                new Vector3f(vectors[1].x, vectors[1].y, vectors[1].z),
-                new Vector3f(vectors[2].x, vectors[2].y, vectors[2].z),
-                new Vector3f(vectors[3].x, vectors[3].y, vectors[3].z)};
+        perParticleVectors[0].set(vectors[0]);
+        perParticleVectors[1].set(vectors[1]);
+        perParticleVectors[2].set(vectors[2]);
+        perParticleVectors[3].set(vectors[3]);
+        return perParticleVectors;
     }
 
     @Override
     public void particle_core_setupDefaultBillboardVectors(Camera camera) {
-        vectors[0] = new Vector3f(-1.0f, -1.0f, 0.0f);
-        vectors[1] = new Vector3f(-1.0f, 1.0f, 0.0f);
-        vectors[2] = new Vector3f(1.0f, 1.0f, 0.0f);
-        vectors[3] = new Vector3f(1.0f, -1.0f, 0.0f);
-        for (var vector : vectors){
-            vector.rotate(camera.getRotation());
-        }
+        vectors[0].set(-1.0f, -1.0f, 0.0f).rotate(camera.getRotation());
+        vectors[1].set(-1.0f, 1.0f, 0.0f).rotate(camera.getRotation());
+        vectors[2].set(1.0f, 1.0f, 0.0f).rotate(camera.getRotation());
+        vectors[3].set(1.0f, -1.0f, 0.0f).rotate(camera.getRotation());
     }
 
     @Inject(method = "renderParticles", at = @At("HEAD"))
