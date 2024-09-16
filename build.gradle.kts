@@ -129,12 +129,11 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
         versionType.set(releaseType)
         uploadFile.set(tasks.remapJar.get())
         gameVersions.addAll(mcVersions.split(","))
-        loaders.addAll("fabric", "quilt")
+        loaders.addAll("neoforge")
         detectLoaders.set(false)
         changelog.set(log.readText())
         dependencies {
-            required.project("fabric-api")
-            required.project("fabric-language-kotlin")
+            required.project("kotlin-for-forge")
             required.project("fzzy-config")
         }
         debugMode.set(uploadDebugMode.toBooleanLenient() ?: true)
@@ -153,22 +152,19 @@ if (System.getenv("CURSEFORGE_TOKEN") != null) {
             changelog = log
             changelogType = "markdown"
             this.releaseType = releaseType
-            for (ver in mcVersions.split(",")){
+            for (ver in mcVersions.split(",")) {
                 addGameVersion(ver)
             }
-            addGameVersion("Fabric")
-            addGameVersion("Quilt")
+            addGameVersion("NeoForge")
             mainArtifact(tasks.remapJar.get().archiveFile.get(), closureOf<CurseArtifact> {
                 displayName = "${base.archivesName.get()}-$modVersion"
-                relations(closureOf<CurseRelation>{
-                    this.requiredDependency("fabric-api")
-                    this.requiredDependency("fabric-language-kotlin")
+                relations(closureOf<CurseRelation> {
+                    this.requiredDependency("kotlin-for-forge")
                     this.requiredDependency("fzzy-config")
                 })
             })
-            relations(closureOf<CurseRelation>{
-                this.requiredDependency("fabric-api")
-                this.requiredDependency("fabric-language-kotlin")
+            relations(closureOf<CurseRelation> {
+                this.requiredDependency("kotlin-for-forge")
                 this.requiredDependency("fzzy-config")
             })
         })
