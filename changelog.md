@@ -1,8 +1,8 @@
 ### Additions
-* Port to (Neo)Forge!
+* Port to NeoForge!
 
 ### Changes
 * Improvements to lightmap caching and rotation optimization
 
 ### Fixes
-* There may be some regressions, since Forge's mixin system is much less sophisticated than Fabrics. Please raise an issue if anything is going wrong.
+* There may be some regressions. Please raise an issue if anything is going wrong.
