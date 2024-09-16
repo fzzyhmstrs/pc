@@ -3,9 +3,10 @@ import com.matthewprenger.cursegradle.CurseProject
 import com.matthewprenger.cursegradle.CurseRelation
 import com.matthewprenger.cursegradle.Options
 import org.jetbrains.kotlin.cli.common.toBooleanLenient
+import java.net.URI
 
 plugins {
-    id("fabric-loom")
+    id("dev.architectury.loom")
     val kotlinVersion: String by System.getProperties()
     kotlin("jvm").version(kotlinVersion)
     id("com.modrinth.minotaur") version "2.+"
@@ -23,26 +24,6 @@ group = mavenGroup
 println("## Changelog for ${base.archivesName.get()} $modVersion \n\n" + log.readText())
 println(base.archivesName.get().replace('_','-'))
 repositories {
-    /*maven {
-        name = "TerraformersMC"
-        url = uri("https://maven.terraformersmc.com/")
-    }*/
-    /*maven {
-        name = "REI"
-        url = uri("https://maven.shedaniel.me")
-    }*/
-    /*maven {
-        name = "Progwml6 maven"
-        url = uri("https://dvs1.progwml6.com/files/maven/")
-    }*/
-    /*maven {
-        name = "Ladysnake Libs"
-        url = uri("https://maven.ladysnake.org/releases")
-        content {
-            includeGroup("io.github.ladysnake")
-            includeGroupByRegex("io\\.github\\.onyxstudios.*")
-        }
-    }*/
     maven {
         name = "FallenBreath"
         url = uri("https://maven.fallenbreath.me/releases")
@@ -53,6 +34,9 @@ repositories {
         content {
             includeGroup("maven.modrinth")
         }
+    }
+    maven {
+        url = URI("https://thedarkcolour.github.io/KotlinForForge/")
     }
     maven {
         name = "Jitpack"
@@ -68,11 +52,10 @@ dependencies {
     val yarnMappings: String by project
     mappings("net.fabricmc:yarn:$yarnMappings:v2")
     val loaderVersion: String by project
-    modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
-    val fabricVersion: String by project
-    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
-    val fabricKotlinVersion: String by project
-    modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
+    forge("net.minecraftforge:forge:$loaderVersion")
+
+    val kotlinForForgeVersion: String by project
+    modImplementation("thedarkcolour:kotlinforforge-neoforge:$kotlinForForgeVersion")
 
     val fzzyConfigVersion: String by project
     modImplementation("maven.modrinth:fzzy-config:$fzzyConfigVersion"){
@@ -80,29 +63,15 @@ dependencies {
     }
 
     val cmVersion: String by project
-    implementation("me.fallenbreath:conditional-mixin:$cmVersion")
-    include("me.fallenbreath:conditional-mixin:$cmVersion")
+    implementation("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:$cmVersion")
+    include("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:$cmVersion")
 
-    /*val acVersion: String by project
-    modImplementation(":amethyst_core-$acVersion"){
-        exclude("net.fabricmc.fabric-api")
-    }*/
+}
 
-    /*val fcVersion: String by project
-    modImplementation(":fzzy_core-$fcVersion"){
-        exclude("net.fabricmc.fabric-api")
-    }*/
-
-    /*val gcVersion: String by project
-    modImplementation(":gear_core-$gcVersion"){
-        exclude("net.fabricmc.fabric-api")
-    }*/
-
-    /*val aiVersion: String by project
-    modImplementation(":amethyst_imbuement-$aiVersion"){
-        exclude("net.fabricmc.fabric-api")
-    }*/
-
+loom {
+    forge {
+        mixinConfig ("particle_core.mixins.json")
+    }
 }
 
 tasks {
@@ -125,21 +94,10 @@ tasks {
     }
 
     processResources {
-        val loaderVersion: String by project
-        val fabricKotlinVersion: String by project
-        val fzzyConfigVersion: String by project
         inputs.property("version", project.version)
-        inputs.property("id", base.archivesName.get())
-        inputs.property("loaderVersion", loaderVersion)
-        inputs.property("fabricKotlinVersion", fabricKotlinVersion)
-        inputs.property("fzzyConfigVersion",fzzyConfigVersion)
-        filesMatching("fabric.mod.json") {
+        filesMatching("META-INF/mods.toml") {
             expand(mutableMapOf(
-                "version" to project.version,
-                "id" to base.archivesName.get(),
-                "loaderVersion" to loaderVersion,
-                "fabricKotlinVersion" to fabricKotlinVersion,
-                "fzzyConfigVersion" to fzzyConfigVersion)
+                "version" to project.version)
             )
         }
     }
@@ -165,12 +123,11 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
         versionType.set(releaseType)
         uploadFile.set(tasks.remapJar.get())
         gameVersions.addAll(mcVersions.split(","))
-        loaders.addAll("fabric", "quilt")
+        loaders.addAll("forge", "neoforge")
         detectLoaders.set(false)
         changelog.set(log.readText())
         dependencies {
-            required.project("fabric-api")
-            required.project("fabric-language-kotlin")
+            required.project("kotlin-for-forge")
             required.project("fzzy-config")
         }
         debugMode.set(uploadDebugMode.toBooleanLenient() ?: true)
@@ -192,19 +149,17 @@ if (System.getenv("CURSEFORGE_TOKEN") != null) {
             for (ver in mcVersions.split(",")){
                 addGameVersion(ver)
             }
-            addGameVersion("Fabric")
-            addGameVersion("Quilt")
+            addGameVersion("Forge")
+            addGameVersion("NeoForge")
             mainArtifact(tasks.remapJar.get().archiveFile.get(), closureOf<CurseArtifact> {
                 displayName = "${base.archivesName.get()}-$modVersion"
                 relations(closureOf<CurseRelation>{
-                    this.requiredDependency("fabric-api")
-                    this.requiredDependency("fabric-language-kotlin")
+                    this.requiredDependency("kotlin-for-forge")
                     this.requiredDependency("fzzy-config")
                 })
             })
             relations(closureOf<CurseRelation>{
-                this.requiredDependency("fabric-api")
-                this.requiredDependency("fabric-language-kotlin")
+                this.requiredDependency("kotlin-for-forge")
                 this.requiredDependency("fzzy-config")
             })
         })

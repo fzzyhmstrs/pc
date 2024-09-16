@@ -8,14 +8,11 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedEnum
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedDouble
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat
-import net.fabricmc.api.EnvType
-import net.fabricmc.api.Environment
 import net.minecraft.client.option.ParticlesMode
 import net.minecraft.particle.ParticleType
 import net.minecraft.registry.Registries
 import net.minecraft.util.Identifier
 
-@Environment(EnvType.CLIENT)
 @ConvertFrom("particle_core_config_v1.json")
 class PcConfigImpl: Config(Identifier("particle_core","particle_core_config"),"","") {
 

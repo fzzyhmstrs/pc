@@ -1,0 +1,45 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+issueTrackerURL = "https://github.com/fzzyhmstrs/pc/issues"
+license = "MIT"
+
+[[mods]]
+modId = "particle_core"
+version = "${version}"
+displayName = "Particle Core"
+authors = "fzzyhmstrs"
+description = '''
+Particle optimizations. Particle culling, rendering optimization, and configurable disabling of particles.
+'''
+logoFile = "assets/particle_core/icon.png"
+
+[[mixins]]
+config = "particle_core.mixins.json"
+
+[[dependencies.particle_core]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.particle_core]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1]"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.particle_core]]
+modId = "kotlinforforge"
+mandatory = true
+versionRange = "[4.11.0,4.99.0]"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.particle_core]]
+modId = "fzzy_config"
+mandatory = true
+versionRange = "[0.4.1,)"
+ordering = "AFTER"
+side = "CLIENT"

@@ -2,6 +2,7 @@
   "required": true,
   "package": "me.fzzyhmstrs.particle_core.mixins",
   "compatibilityLevel": "JAVA_16",
+  "minVersion": "0.8.5",
   "plugin": "me.fzzyhmstrs.particle_core.plugin.PcMixinPlugin",
   "mixins": [
   ],
@@ -9,13 +10,10 @@
     "BillboardParticleMixin",
     "LivingEntityMixin",
     "ParticleManagerCachedLightMixin",
-    "ParticleManagerFrustumMixin",
     "ParticleManagerRotationMixin",
     "ParticleMixin",
-    "WorldRendererFrustumMixin",
     "WorldRendererDecreaseMixin",
     "WorldRendererTypeMixin",
-    "FrustumAccessor",
     "ParticleAccessor"
   ],
   "server": [
