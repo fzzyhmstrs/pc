@@ -6,16 +6,17 @@
   "mixins": [
   ],
   "client": [
+    "BillboardParticleMixin",
+    "FrustumAccessor",
     "LivingEntityMixin",
+    "ParticleAccessor",
     "ParticleManagerCachedLightMixin",
     "ParticleManagerFrustumMixin",
     "ParticleManagerRotationMixin",
     "ParticleMixin",
-    "WorldRendererFrustumMixin",
     "WorldRendererDecreaseMixin",
-    "WorldRendererTypeMixin",
-    "FrustumAccessor",
-    "ParticleAccessor"
+    "WorldRendererFrustumMixin",
+    "WorldRendererTypeMixin"
   ],
   "server": [
   ],

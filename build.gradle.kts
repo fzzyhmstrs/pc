@@ -38,9 +38,6 @@ repositories {
         name = "Jitpack"
         url = uri("https://jitpack.io")
     }
-    flatDir {
-        dirs("E:\\Documents\\Mod Libraries\\fzzy_config\\build\\libs")
-    }
     mavenCentral()
 }
 dependencies {
@@ -58,7 +55,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
 
     val fzzyConfigVersion: String by project
-    modImplementation(":fzzy_config-$fzzyConfigVersion"){
+    modImplementation("maven.modrinth:fzzy-config:$fzzyConfigVersion") {
         exclude("net.fabricmc.fabric-api")
     }
 
@@ -97,7 +94,7 @@ tasks {
         inputs.property("id", base.archivesName.get())
         inputs.property("loaderVersion", loaderVersion)
         inputs.property("fabricKotlinVersion", fabricKotlinVersion)
-        inputs.property("fzzyConfigVersion",fzzyConfigVersion)
+        inputs.property("fzzyConfigVersion", fzzyConfigVersion)
         filesMatching("fabric.mod.json") {
             expand(mutableMapOf(
                 "version" to project.version,
