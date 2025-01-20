@@ -5,7 +5,9 @@ import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import me.fzzyhmstrs.particle_core.interfaces.RotationProvider;
 import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
 import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.client.particle.ParticleTextureSheet;
 import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.VertexConsumerProvider;
 import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,6 +15,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.function.Predicate;
 
 @Restriction(
         require = {
@@ -41,8 +45,8 @@ public class ParticleManagerRotationMixin implements RotationProvider {
 		particle_core$vectors[2][2].set(1.0f, 1.0f, 0.0f).rotate(camera.getRotation());
     }
 
-    @Inject(method = "renderParticles(Lnet/minecraft/client/render/Camera;FLnet/minecraft/client/render/VertexConsumerProvider$Immediate;)V", at = @At("HEAD"))
-    private void particle_core_setupDefaultRotations(Camera camera, float tickDelta, VertexConsumerProvider.Immediate vertexConsumerProvider, CallbackInfo ci) {
-        particle_core_setupDefaultBillboardVectors(camera);
+    @Inject(method = "render", at = @At("HEAD"))
+    private void particle_core_setupDefaultRotations(Camera arg, float f, VertexConsumerProvider.Immediate arg2, Frustum frustum, Predicate<ParticleTextureSheet> renderTypePredicate, CallbackInfo ci) {
+        particle_core_setupDefaultBillboardVectors(arg);
     }
 }
