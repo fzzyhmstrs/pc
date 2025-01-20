@@ -43,7 +43,7 @@ public abstract class BillboardParticleMixin extends Particle {
 	@Unique
 	private final Quaternionf dummyQuat = new Quaternionf();
 
-	@Inject(method = "buildGeometry", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
 	private void particle_core_applyDummyQuat(VertexConsumer vertexConsumer, Camera camera, float tickDelta, CallbackInfo ci) {
 		//short circuit the entire buildGeometry process for particles that don't need their geometry rebuilt
 		if (this.getRotator() == BillboardParticle.Rotator.ALL_AXIS && this.angle == 0f) {

@@ -35,8 +35,8 @@ public class ParticleManagerCachedLightMixin implements CachedLightProvider {
         return particle_core$cachedLightMap;
     }
 
-    @Inject(method = "render", at = @At("HEAD"))
-    private void particle_core_setupLightmapCache(LightmapTextureManager arg, Camera arg2, float f, Frustum frustum, Predicate<ParticleTextureSheet> renderTypePredicate, CallbackInfo ci){
-        particle_core$cachedLightMap.clear();
+    @Inject(method = "renderParticles(Lnet/minecraft/client/render/Camera;FLnet/minecraft/client/render/VertexConsumerProvider$Immediate;)V", at = @At("HEAD"))
+    private void particle_core_setupDefaultRotations(Camera camera, float tickDelta, VertexConsumerProvider.Immediate vertexConsumers, CallbackInfo ci){
+        cachedLightMap.clear();
     }
 }
