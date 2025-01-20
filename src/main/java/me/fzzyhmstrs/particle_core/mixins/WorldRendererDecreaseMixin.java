@@ -6,7 +6,6 @@ import me.fallenbreath.conditionalmixin.api.annotation.Condition;
 import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import me.fzzyhmstrs.particle_core.PcConfig;
 import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
-import net.minecraft.client.option.ParticlesMode;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.particle.ParticlesMode;

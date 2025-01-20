@@ -8,7 +8,6 @@ import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedBoolean
 import me.fzzyhmstrs.fzzy_config.validation.misc.ValidatedEnum
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedDouble
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat
-import net.minecraft.client.option.ParticlesMode
 import net.minecraft.particle.ParticleType
 import net.minecraft.particle.ParticlesMode
 import net.minecraft.registry.Registries
