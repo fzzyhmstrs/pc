@@ -10,8 +10,8 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedDouble
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
-import net.minecraft.client.option.ParticlesMode
 import net.minecraft.particle.ParticleType
+import net.minecraft.particle.ParticlesMode
 import net.minecraft.registry.Registries
 import net.minecraft.util.Identifier
 
@@ -34,7 +34,7 @@ class PcConfigImpl: Config(Identifier.of("particle_core","particle_core_config")
         return PcUtils.random.nextDouble() < chance
     }
 
-    fun getReducedParticleSpawnType(mode: ParticlesMode): ParticlesMode{
+    fun getReducedParticleSpawnType(mode: ParticlesMode): ParticlesMode {
         var outMode = mode
         if (outMode == ParticlesMode.ALL){
             if (PcUtils.random.nextFloat() < reduceAllChance.get()){

@@ -9,6 +9,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.VertexConsumerProvider;
 import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -44,8 +45,8 @@ public class ParticleManagerRotationMixin implements RotationProvider {
         vectors[2][2].set(1.0f, 1.0f, 0.0f).rotate(camera.getRotation());
     }
 
-    @Inject(method = "renderParticles", at = @At("HEAD"))
-    private void particle_core_setupDefaultRotations(LightmapTextureManager lightmapTextureManager, Camera camera, float tickDelta, CallbackInfo ci){
+    @Inject(method = "renderParticles(Lnet/minecraft/client/render/Camera;FLnet/minecraft/client/render/VertexConsumerProvider$Immediate;)V", at = @At("HEAD"))
+    private void particle_core_setupDefaultRotations(Camera camera, float tickDelta, VertexConsumerProvider.Immediate vertexConsumerProvider, CallbackInfo ci) {
         particle_core_setupDefaultBillboardVectors(camera);
     }
 }
