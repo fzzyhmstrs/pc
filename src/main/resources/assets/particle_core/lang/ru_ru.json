@@ -1,0 +1,11 @@
+{
+  "particle_core.particle_core_config.NONE.desc": "Никакие частицы зелий не будут отключены",
+  "particle_core.particle_core_config.SELF.desc": "Частицы зелий, испускаемые вами, будут отключены",
+  "particle_core.particle_core_config.PLAYER.desc": "Частицы зелий, испускаемые всеми игроками (включая вас), будут отключены",
+  "particle_core.particle_core_config.ALL.desc": "Все частицы зелий будут отключены",
+  "particle_core.particle_core_config.turnOffPotionParticles.desc": "Отключает частицы зелий в разной степени, в зависимости от выбранного параметра.",
+  "particle_core.particle_core_config.reduceAllChance.desc": "[Значение от 0.0 до 1.0] Уменьшает количество частиц в режиме ALL. Например, значение 0.1 будет составлять 10% частиц. По сути, это выбор между ALL и DECREASED.",
+  "particle_core.particle_core_config.reduceDecreasedChance.desc": "[Значение от 0.0 до 1.0] Уменьшает количество частиц в режиме DECREASED. Например, значение 0.1 будет составлять 10% частиц. По сути, это выбор между DECREASED и MINIMAL.",
+  "particle_core.particle_core_config.disableParticles.desc": "[да или нет] Полностью отключает все частицы на клиенте.",
+  "particle_core.particle_core_config.byTypeReductions.desc": "Позволяет уменьшить/отключить количество отдельных типов частиц. Например, если установить значение 'minecraft:smoke' равным 0.3, частицы дыма и костра будут появляться с частотой, равной 30% от их обычной."
+}
