@@ -2,7 +2,8 @@ import com.matthewprenger.cursegradle.CurseArtifact
 import com.matthewprenger.cursegradle.CurseProject
 import com.matthewprenger.cursegradle.CurseRelation
 import com.matthewprenger.cursegradle.Options
-import org.jetbrains.kotlin.cli.common.toBooleanLenient
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("fabric-loom")
@@ -75,8 +76,10 @@ tasks {
         targetCompatibility = javaVersion.toString()
         options.release.set(javaVersion.toString().toInt())
     }
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions { jvmTarget = javaVersion.toString() }
+    withType<KotlinCompile>().configureEach {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.fromTarget(javaVersion.toString()))
+        }
     }
 
     jar {
@@ -138,7 +141,7 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
             required.project("fabric-language-kotlin")
             required.project("fzzy-config")
         }
-        debugMode.set(uploadDebugMode.toBooleanLenient() ?: true)
+        debugMode.set(uploadDebugMode.toBooleanStrictOrNull() ?: true)
     }
 }
 
@@ -177,7 +180,7 @@ if (System.getenv("CURSEFORGE_TOKEN") != null) {
             javaIntegration = false
             forgeGradleIntegration = false
             javaVersionAutoDetect = false
-            debug = uploadDebugMode.toBooleanLenient() ?: true
+            debug = uploadDebugMode.toBooleanStrictOrNull() ?: true
         })
     }
 }

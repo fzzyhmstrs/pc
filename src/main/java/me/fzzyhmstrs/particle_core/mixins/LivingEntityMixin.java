@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
 
-    @WrapWithCondition(method = "tickStatusEffects", at = @At(value = "INVOKE", target = "net/minecraft/world/World.addParticle (Lnet/minecraft/particle/ParticleEffect;DDDDDD)V"))
+    @WrapWithCondition(method = "tickStatusEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addParticleClient(Lnet/minecraft/particle/ParticleEffect;DDDDDD)V"))
     private boolean particle_core_turnOffPotionParticles(World instance, ParticleEffect parameters, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
         if(PcConfig.INSTANCE.getImpl().getTurnOffPotionParticles().get() == PcConfig.PotionDisableType.NONE) return true;
         if(PcConfig.INSTANCE.getImpl().getTurnOffPotionParticles().get() == PcConfig.PotionDisableType.ALL) return false;
