@@ -17,7 +17,8 @@ base {
 }
 val log: File = file("changelog.md")
 val modVersion: String by project
-version = modVersion
+val minecraftVersion: String by project
+version = "$modVersion+$minecraftVersion"
 val mavenGroup: String by project
 group = mavenGroup
 println("## Changelog for ${base.archivesName.get()} $modVersion \n\n" + log.readText())
@@ -160,8 +161,8 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
 
         token.set(System.getenv("MODRINTH_TOKEN"))
         projectId.set(modrinthSlugName)
-        versionNumber.set(modVersion)
-        versionName.set("${base.archivesName.get()}-$modVersion")
+        versionNumber.set("$modVersion+$minecraftVersion")
+        versionName.set("${base.archivesName.get()}-$modVersion+$minecraftVersion")
         versionType.set(releaseType)
         uploadFile.set(tasks.remapJar.get())
         gameVersions.addAll(mcVersions.split(","))
@@ -195,7 +196,7 @@ if (System.getenv("CURSEFORGE_TOKEN") != null) {
             addGameVersion("Fabric")
             addGameVersion("Quilt")
             mainArtifact(tasks.remapJar.get().archiveFile.get(), closureOf<CurseArtifact> {
-                displayName = "${base.archivesName.get()}-$modVersion"
+                displayName = "${base.archivesName.get()}-$modVersion+$minecraftVersion"
                 relations(closureOf<CurseRelation>{
                     this.requiredDependency("fabric-api")
                     this.requiredDependency("fabric-language-kotlin")
