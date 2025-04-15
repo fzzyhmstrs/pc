@@ -18,7 +18,8 @@ base {
 }
 val log: File = file("changelog.md")
 val modVersion: String by project
-version = modVersion
+val minecraftVersion: String by project
+version = "$modVersion+$minecraftVersion+forge"
 val mavenGroup: String by project
 group = mavenGroup
 println("## Changelog for ${base.archivesName.get()} $modVersion \n\n" + log.readText())
@@ -118,8 +119,8 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
 
         token.set(System.getenv("MODRINTH_TOKEN"))
         projectId.set(modrinthSlugName)
-        versionNumber.set(modVersion)
-        versionName.set("${base.archivesName.get()}-$modVersion")
+        versionNumber.set("$modVersion+$minecraftVersion+forge")
+        versionName.set("${base.archivesName.get()}-$modVersion+$minecraftVersion+forge")
         versionType.set(releaseType)
         uploadFile.set(tasks.remapJar.get())
         gameVersions.addAll(mcVersions.split(","))
@@ -152,8 +153,8 @@ if (System.getenv("CURSEFORGE_TOKEN") != null) {
             addGameVersion("Forge")
             addGameVersion("NeoForge")
             mainArtifact(tasks.remapJar.get().archiveFile.get(), closureOf<CurseArtifact> {
-                displayName = "${base.archivesName.get()}-$modVersion"
-                relations(closureOf<CurseRelation>{
+                displayName = "${base.archivesName.get()}-$modVersion+$minecraftVersion+forge"
+                relations(closureOf<CurseRelation> {
                     this.requiredDependency("kotlin-for-forge")
                     this.requiredDependency("fzzy-config")
                 })
