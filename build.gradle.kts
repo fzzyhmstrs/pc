@@ -43,6 +43,10 @@ repositories {
         name = "Jitpack"
         url = uri("https://jitpack.io")
     }
+    maven {
+        name = "FzzyMaven"
+        url = uri("https://maven.fzzyhmstrs.me/")
+    }
     mavenCentral()
 }
 dependencies {
@@ -59,7 +63,7 @@ dependencies {
     modImplementation("thedarkcolour:kotlinforforge-neoforge:$kotlinForForgeVersion")
 
     val fzzyConfigVersion: String by project
-    modImplementation("maven.modrinth:fzzy-config:$fzzyConfigVersion"){
+    modImplementation("me.fzzyhmstrs:fzzy_config:$fzzyConfigVersion+$minecraftVersion"){
         exclude("net.fabricmc.fabric-api")
     }
 
