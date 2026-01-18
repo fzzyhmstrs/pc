@@ -1,13 +1,9 @@
 package me.fzzyhmstrs.particle_core.interfaces;
 
-import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenCustomHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public interface CachedLightProvider {
-
-    Object2IntLinkedOpenHashMap<BlockPos> particle_core_getCache();
-
+    ConcurrentHashMap<BlockPos, Integer> particle_core_getCache();
 }
