@@ -30,7 +30,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
         },
         conflict = {
                 @Condition("sodium"),
-                @Condition("embeddium")
+                @Condition("embeddium"),
+                @Condition("rubidium")
         }
 )
 @Mixin(BillboardParticle.class)
