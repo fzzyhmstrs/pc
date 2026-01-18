@@ -1,6 +1,6 @@
 package me.fzzyhmstrs.particle_core.mixins;
 
-import com.llamalad7.mixinextras.injector.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import me.fallenbreath.conditionalmixin.api.annotation.Condition;
@@ -28,7 +28,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
                 @Condition(type = Condition.Type.TESTER, tester = PcConditionTester.class)
         },
         conflict = {
-                @Condition("sodium")
+                @Condition("sodium"),
+                @Condition("embeddium")
         }
 )
 @Mixin(BillboardParticle.class)
@@ -39,14 +40,14 @@ abstract class BillboardParticleMixin extends Particle {
     }
 
     @Inject(method = "buildGeometry", at = @At(value = "INVOKE", target = "net/minecraft/client/particle/BillboardParticle.getSize (F)F"), require = 0)
-    private void particle_core_applyStandardRotationVector(VertexConsumer vertexConsumer, Camera camera, float tickDelta, CallbackInfo ci, @Local LocalRef<Vector3f[]> vector3fs){
+    private void particle_core_applyStandardRotationVector(VertexConsumer vertexConsumer, Camera camera, float tickDelta, CallbackInfo ci, @Local LocalRef<Vector3f[]> vector3fs) {
         if(this.angle == 0f) {
             vector3fs.set(((RotationProvider)MinecraftClient.getInstance().particleManager).particle_core_getDefaultBillboardVectors());
         }
     }
 
-    @WrapWithCondition(method = "buildGeometry", at = @At(value = "INVOKE", target = "org/joml/Vector3f.rotate (Lorg/joml/Quaternionfc;)Lorg/joml/Vector3f;"), require = 0)
-    private boolean particle_core_onlyRotateIfAngled(Vector3f instance, Quaternionfc quat){
+    @WrapWithCondition(method = "buildGeometry", at = @At(value = "INVOKE", target = "org/joml/Vector3f.rotate (Lorg/joml/Quaternionfc;)Lorg/joml/Vector3f;"), require = 0, remap = false)
+    private boolean particle_core_onlyRotateIfAngled(Vector3f instance, Quaternionfc quat) {
         return this.angle != 0f;
     }
 }
