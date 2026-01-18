@@ -8,13 +8,24 @@
   ],
   "client": [
     "BillboardParticleMixin",
+    "BillboardParticleVertexMixin",
+    "BufferBuilderVertexMixin",
+    "FrustumAccessor",
     "LivingEntityMixin",
+    "ParticleAccessor",
+    "ParticleBrightnessCacheMixin",
+    "ParticleCachePosMixin",
+    "ParticleManagerAsyncMixin",
     "ParticleManagerCachedLightMixin",
+    "ParticleManagerCachedPosMixin",
+    "ParticleManagerCountMixin",
+    "ParticleManagerFrustumMixin",
+    "ParticleManagerRenderDistanceMixin",
     "ParticleManagerRotationMixin",
-    "ParticleMixin",
+    "ParticleMoveAdjustMixin",
     "WorldRendererDecreaseMixin",
-    "WorldRendererTypeMixin",
-    "ParticleAccessor"
+    "WorldRendererFrustumMixin",
+    "WorldRendererTypeMixin"
   ],
   "server": [
   ],

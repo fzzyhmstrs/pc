@@ -19,9 +19,9 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(WorldRenderer.class)
 public class WorldRendererDecreaseMixin {
 
-    @Redirect(method = "getRandomParticleSpawnChance", at = @At(value = "INVOKE", target = "net/minecraft/client/option/SimpleOption.getValue ()Ljava/lang/Object;"))
-    private <T> T particle_core_reduceParticleSpawnType(SimpleOption<T> instance) {
-        T value = instance.getValue();
+    @WrapOperation(method = "getRandomParticleSpawnChance", at = @At(value = "INVOKE", target = "net/minecraft/client/option/SimpleOption.getValue ()Ljava/lang/Object;"))
+    private <T> T particle_core_reduceParticleSpawnType(SimpleOption<T> instance, Operation<T> original) {
+        T value = original.call(instance);
         if (value instanceof ParticlesMode) {
             return (T)PcConfig.INSTANCE.getImpl().getReducedParticleSpawnType((ParticlesMode) value);
         }

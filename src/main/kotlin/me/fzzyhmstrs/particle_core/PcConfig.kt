@@ -4,6 +4,7 @@ import me.fzzyhmstrs.fzzy_config.api.ConfigApi
 import me.fzzyhmstrs.fzzy_config.api.RegisterType
 import me.fzzyhmstrs.fzzy_config.util.EnumTranslatable
 import net.minecraft.util.Identifier
+import org.slf4j.LoggerFactory
 import net.minecraftforge.fml.common.Mod
 
 @Mod("particle_core")
@@ -17,14 +18,10 @@ object PcConfig {
 
     fun init(){}
 
-    internal val validOptimizationStrings = listOf(
-        "ROTATION",
-        "CULLING",
-        "TYPE",
-        "DECREASE",
-        "LIGHTMAP",
-        "POTION"
-    )
+    val logger =  LoggerFactory.getLogger("particle_core")
+
+    internal var renderDistance = 0.0
+    internal var previousViewDistance = -1
 
     internal val byTypeParticleReduction: Map<Identifier, Double>
         get() = impl.byTypeReductions
@@ -32,7 +29,7 @@ object PcConfig {
 
     var impl: PcConfigImpl = ConfigApi.registerAndLoadConfig({ PcConfigImpl() }, RegisterType.CLIENT)
 
-    enum class PotionDisableType(val index: Int): EnumTranslatable{
+    enum class PotionDisableType(val index: Int): EnumTranslatable {
         NONE(0),
         SELF(1),
         PLAYER(2),
