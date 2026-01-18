@@ -23,7 +23,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
                 @Condition(type = Condition.Type.TESTER, tester = PcConditionTester.class)
         },
         conflict = {
-                @Condition("sodium")
+                @Condition("sodium"),
+                @Condition("embeddium"),
+                @Condition("rubidium")
         }
 )
 @Mixin(ParticleManager.class)
