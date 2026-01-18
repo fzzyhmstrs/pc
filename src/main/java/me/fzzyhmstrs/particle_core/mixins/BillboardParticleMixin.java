@@ -1,5 +1,8 @@
 package me.fzzyhmstrs.particle_core.mixins;
 
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import me.fallenbreath.conditionalmixin.api.annotation.Condition;
 import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import me.fzzyhmstrs.particle_core.interfaces.RotationProvider;
@@ -22,12 +25,13 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Restriction(
-		require = {
-				@Condition(type = Condition.Type.TESTER, tester = PcConditionTester.class)
-		},
-		conflict = {
-				@Condition("sodium")
-		}
+        require = {
+                @Condition(type = Condition.Type.TESTER, tester = PcConditionTester.class)
+        },
+        conflict = {
+                @Condition("sodium"),
+                @Condition("embeddium")
+        }
 )
 @Mixin(BillboardParticle.class)
 public abstract class BillboardParticleMixin extends Particle {
