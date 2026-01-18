@@ -7,18 +7,15 @@ import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.util.Identifier
+import org.slf4j.LoggerFactory
 
 @Environment(EnvType.CLIENT)
 object PcConfig: ClientModInitializer {
 
-    internal val validOptimizationStrings = listOf(
-        "ROTATION",
-        "CULLING",
-        "TYPE",
-        "DECREASE",
-        "LIGHTMAP",
-        "POTION"
-    )
+    val logger =  LoggerFactory.getLogger("particle_core")
+
+    internal var renderDistance = 0.0
+    internal var previousViewDistance = -1
 
     internal val byTypeParticleReduction: Map<Identifier, Double>
         get() = impl.byTypeReductions
@@ -26,7 +23,7 @@ object PcConfig: ClientModInitializer {
 
     var impl: PcConfigImpl = ConfigApi.registerAndLoadConfig({ PcConfigImpl() }, RegisterType.CLIENT)
 
-    enum class PotionDisableType(val index: Int): EnumTranslatable{
+    enum class PotionDisableType(val index: Int): EnumTranslatable {
         NONE(0),
         SELF(1),
         PLAYER(2),
