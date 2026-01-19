@@ -35,7 +35,7 @@ public class ParticleManagerRenderDistanceMixin {
 
 	@WrapWithCondition(method = "renderParticles", at = @At(value = "INVOKE", target = "net/minecraft/client/particle/Particle.buildGeometry (Lnet/minecraft/client/render/VertexConsumer;Lnet/minecraft/client/render/Camera;F)V"))
 	private boolean particle_core_buildGeoIfWithinRenderDistance(Particle instance, VertexConsumer vertexConsumer, Camera camera, float v) {
-		return PcConfig.INSTANCE.getImpl().shouldRenderParticle(
+		return PcConfig.INSTANCE.shouldRenderParticle(
 				((ParticleAccessor)instance).getX(),
 				((ParticleAccessor)instance).getY(),
 				((ParticleAccessor)instance).getZ(),

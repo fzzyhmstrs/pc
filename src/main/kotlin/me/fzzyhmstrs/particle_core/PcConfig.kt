@@ -3,10 +3,18 @@ package me.fzzyhmstrs.particle_core
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi
 import me.fzzyhmstrs.fzzy_config.api.RegisterType
 import me.fzzyhmstrs.fzzy_config.util.EnumTranslatable
+import me.fzzyhmstrs.particle_core.mixins.FrustumAccessor
+import me.fzzyhmstrs.particle_core.mixins.ParticleAccessor
+import net.fabricmc.api.ClientModInitializer
+import net.minecraft.client.particle.Particle
+import net.minecraft.client.render.Frustum
+import net.minecraft.util.math.Vec3d
+import org.slf4j.Logger
 import net.minecraft.util.Identifier
 import org.slf4j.LoggerFactory
 import net.neoforged.fml.common.Mod
 
+import java.util.function.Predicate
 
 @Mod("particle_core")
 class ParticleCoreNeoForge() {
@@ -19,22 +27,71 @@ object PcConfig {
 
     fun init(){}
 
-    val logger =  LoggerFactory.getLogger("particle_core")
+    val logger: Logger =  LoggerFactory.getLogger("particle_core")
 
     internal var renderDistance = 0.0
-    internal var previousViewDistance = -1
 
-    internal val byTypeParticleReduction: Map<Identifier, Double>
-        get() = impl.byTypeReductions
+    internal var previousChoices = listOf<PotionDisableType>()
 
+    internal var choiceFlags = 0
 
     var impl: PcConfigImpl = ConfigApi.registerAndLoadConfig({ PcConfigImpl() }, RegisterType.CLIENT)
 
-    enum class PotionDisableType(val index: Int): EnumTranslatable {
-        NONE(0),
-        SELF(1),
-        PLAYER(2),
-        ALL(3);
+    fun shouldRenderParticle(x: Double, y: Double, z: Double, pos: Vec3d): Boolean {
+        return pos.squaredDistanceTo(x, y, z) <= renderDistance
+    }
+
+    fun shouldDisablePotionParticle(type: PotionDisableType): Boolean {
+        return choiceFlags and type.flags == type.flags
+    }
+
+    enum class PotionDisableType(val flags: Int, val choicePredicate: Predicate<PotionDisableType>): EnumTranslatable {
+        NONE(1, { it == NONE }),
+        OTHER_PLAYER(2, { it != NONE && it != ALL }),
+        SELF(4, { it != NONE && it != ALL }),
+        MOBS(8, { it != NONE && it != ALL }),
+        ALL(16, { it == ALL });
+
+        override fun prefix(): String {
+            return "particle_core.particle_core_config"
+        }
+    }
+
+    enum class DeprecatedType(vararg val mapTo: PotionDisableType): EnumTranslatable {
+        NONE(PotionDisableType.NONE),
+        OTHER_PLAYER(PotionDisableType.OTHER_PLAYER),
+        SELF(PotionDisableType.SELF),
+        PLAYER(PotionDisableType.OTHER_PLAYER, PotionDisableType.SELF),
+        MOBS(PotionDisableType.MOBS),
+        ALL(PotionDisableType.ALL);
+
+        override fun prefix(): String {
+            return "particle_core.particle_core_config"
+        }
+    }
+
+    enum class CullingBehavior: EnumTranslatable {
+        NO_CULLING {
+            override fun shouldKeep(frustum: Frustum, particle: Particle): Boolean {
+                return false
+            }
+        },
+        AGGRESSIVE {
+            override fun shouldKeep(frustum: Frustum, particle: Particle): Boolean {
+                return (frustum as FrustumAccessor).frustumIntersection.testPoint(
+                    ((particle as ParticleAccessor).x - frustum.x).toFloat(),
+                    ((particle as ParticleAccessor).y - frustum.y).toFloat(),
+                    ((particle as ParticleAccessor).z - frustum.z).toFloat()
+                )
+            }
+        },
+        BOUNDING_BOX {
+            override fun shouldKeep(frustum: Frustum, particle: Particle): Boolean {
+                return frustum.isVisible(particle.boundingBox)
+            }
+        };
+
+        abstract fun shouldKeep(frustum: Frustum, particle: Particle): Boolean
 
         override fun prefix(): String {
             return "particle_core.particle_core_config"
