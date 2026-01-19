@@ -45,7 +45,7 @@ object PcDisable {
     class DisabledOptimizations {
         var _Disable_Optimizations_Options = mapOf(
             "ROTATION" to "[Impact: Medium] Disables mixins related to vertex rotation caching (ParticleManagerRotationMixin, BillboardParticleMixin)",
-            "CULLING" to "[Impact: HIGH] Disables mixins related to particle culling (FrustumAccessor, ParticleAccessor, ParticleManagerFrustumMixin, WorldRendererFrustumMixin)",
+            "CULLING" to "[Impact: HIGH] Disables mixins related to particle culling (FrustumAccessor, ParticleAccessor, ParticleManagerFrustumMixin, WorldRendererFrustumMixin, ParticleFrustumBlacklistMixin)",
             "TYPE" to "[Impact: Low to Medium] Disables mixins related to particle disabling and reduction (WorldRendererTypeMixin)",
             "DECREASE" to "[Impact: Low] Disables mixins related particle settings reduction (ALL, DECREASED, MINIMAL) (WorldRendererDecreaseMixin)",
             "LIGHTMAP" to "[Impact: Medium] Disables mixins related to light map caching (ParticleManagerCachedLightMixin, ParticleBrightnessCacheMixin, ParticleCachePosMixin)",
@@ -53,9 +53,10 @@ object PcDisable {
             "MOVE" to "[Impact: Medium] Disables mixins related to particle movement optimization (ParticleMoveAdjustMixin, ParticleCachePosMixin)",
             "VERTEX" to "[Impact: HIGH] Disables mixins related to particle vertex drawing optimizations (BillboardParticleVertexMixin, BufferBuilderVertexMixin)",
             "COUNT" to "[Impact: Variable] Disables mixins related to max particle count setting (ParticleManagerCountMixin)",
-            "ASYNC" to "[Impact: Medium] Disables asynchronous ticking of particles (ParticleManagerAsyncMixin)")
+            "ASYNC" to "[Impact: Medium] Disables asynchronous ticking of particles (ParticleManagerAsyncMixin)",
+            "RENDER_DISTANCE" to "[Impact: Variable] Disables mixins that control max particle render distance (ParticleManagerRenderDistanceMixin, ParticleAccessor)")
 
-        var disableOptimizations = listOf<String>("NONE")
+        var disableOptimizations = listOf("NONE")
 
         fun shouldDisableMixin(className: String): Boolean {
             if(disableOptimizations.contains("ROTATION")) {
@@ -68,12 +69,18 @@ object PcDisable {
             }
             if(disableOptimizations.contains("CULLING")) {
                 if (className.endsWith("FrustumAccessor")
-                    || className.endsWith("ParticleAccessor")
                     || className.endsWith("ParticleManagerFrustumMixin")
                     || className.endsWith("WorldRendererFrustumMixin"))
                 {
                     println("Disabling [$className] due to 'CULLING' key in particle core config!")
                     return true
+                }
+                if(disableOptimizations.contains("RENDER_DISTANCE")) {
+                    if (className.endsWith("ParticleAccessor"))
+                    {
+                        println("Disabling [$className] due to 'CULLING' and 'RENDER_DISTANCE' key in particle core config!")
+                        return true
+                    }
                 }
             }
             if(disableOptimizations.contains("TYPE")) {
@@ -138,6 +145,13 @@ object PcDisable {
                 if (className.endsWith("ParticleManagerAsyncMixin"))
                 {
                     println("Disabling [$className] due to 'ASYNC' key in particle core config!")
+                    return true
+                }
+            }
+            if(disableOptimizations.contains("RENDER_DISTANCE")) {
+                if (className.endsWith("ParticleManagerRenderDistanceMixin"))
+                {
+                    println("Disabling [$className] due to 'RENDER_DISTANCE' key in particle core config!")
                     return true
                 }
             }
