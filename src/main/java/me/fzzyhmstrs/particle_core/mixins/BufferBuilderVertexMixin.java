@@ -2,41 +2,33 @@ package me.fzzyhmstrs.particle_core.mixins;
 
 import me.fzzyhmstrs.particle_core.interfaces.ParticleVertexer;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.FixedColorVertexConsumer;
-import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.util.math.ColorHelper;
+import org.lwjgl.system.MemoryUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(BufferBuilder.class)
-public abstract class BufferBuilderVertexMixin extends FixedColorVertexConsumer implements ParticleVertexer {
+public abstract class BufferBuilderVertexMixin implements ParticleVertexer {
 
-	@Shadow public abstract void putFloat(int index, float value);
+	@Shadow protected abstract long beginVertex();
 
-	@Shadow public abstract void putByte(int index, byte value);
+	@Shadow
+	private static void putColor(long pointer, int argb) {
+	}
 
-	@Shadow public abstract void putShort(int index, short value);
-
-	@Shadow private int elementOffset;
-
-	@Shadow public abstract void vertex(float x, float y, float z, float red, float green, float blue, float alpha, float u, float v, int overlay, int light, float normalX, float normalY, float normalZ);
+	@Shadow
+	private static void putInt(long pointer, int i) {
+	}
 
 	@Override
 	public void particle_core_particleVertex(float x, float y, float z, float red, float green, float blue, float alpha, float u, float v, int light) {
-		if (this.colorFixed) {
-			throw new IllegalStateException();
-		}
-		this.putFloat(0, x);
-		this.putFloat(4, y);
-		this.putFloat(8, z);
-		this.putFloat(12, u);
-		this.putFloat(16, v);
-		this.putByte(20, (byte)(red * 255.0f));
-		this.putByte(21, (byte)(green * 255.0f));
-		this.putByte(22, (byte)(blue * 255.0f));
-		this.putByte(23, (byte)(alpha * 255.0f));
-		this.putShort(24, (short)(light & (LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE | 0xFF0F)));
-		this.putShort(26, (short)(light >> 16 & (LightmapTextureManager.MAX_BLOCK_LIGHT_COORDINATE | 0xFF0F)));
-		this.elementOffset += 28;
-		this.next();
+		long l = this.beginVertex();
+		MemoryUtil.memPutFloat(l, x);
+		MemoryUtil.memPutFloat(l + 4L, y);
+		MemoryUtil.memPutFloat(l + 8L, z);
+		MemoryUtil.memPutFloat(l + 12L, u);
+		MemoryUtil.memPutFloat(l + 16L, v);
+		putColor(l + 20L, ColorHelper.Argb.fromFloats(alpha, red, green, blue));
+		putInt(l + 24L, light);
 	}
 }
