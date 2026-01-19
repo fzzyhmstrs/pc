@@ -13,6 +13,7 @@
     "ParticleAccessor",
     "ParticleBrightnessCacheMixin",
     "ParticleCachePosMixin",
+    "ParticleFrustumBlacklistMixin",
     "ParticleManagerAsyncMixin",
     "ParticleManagerCachedLightMixin",
     "ParticleManagerCachedPosMixin",
