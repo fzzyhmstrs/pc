@@ -29,7 +29,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ParticleManagerRenderDistanceMixin {
 
 	@Inject(method = "renderParticles", at = @At("HEAD"))
-	private void particle_core_setupViewDistance(MatrixStack matrices, VertexConsumerProvider.Immediate vertexConsumers, LightmapTextureManager lightmapTextureManager, Camera camera, float tickDelta, CallbackInfo ci) {
+	private void particle_core_setupViewDistance(LightmapTextureManager lightmapTextureManager, Camera camera, float tickDelta, CallbackInfo ci) {
 		PcConfig.INSTANCE.getImpl().setupParticleViewDistance();
 	}
 

@@ -56,7 +56,7 @@ class PcConfigImpl: Config(Identifier.of("particle_core","particle_core_config")
 
     var asynchronousTicking = ValidatedBoolean()
 
-    private var cullingBlacklist = ValidatedIdentifier.ofRegistry(Identifier("smoke"), Registries.PARTICLE_TYPE).toSet()
+    private var cullingBlacklist = ValidatedIdentifier.ofRegistry(Identifier.of("smoke"), Registries.PARTICLE_TYPE).toSet()
 
     private var cullingBehavior = ValidatedEnum(PcConfig.CullingBehavior.AGGRESSIVE)
 
