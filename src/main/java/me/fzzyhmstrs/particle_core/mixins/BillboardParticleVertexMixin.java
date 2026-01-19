@@ -27,17 +27,17 @@ import org.spongepowered.asm.mixin.injection.At;
 @Debug(export = true)
 abstract class BillboardParticleVertexMixin {
 
-    @WrapOperation(method = "buildGeometry", at = @At(value = "INVOKE", target = "net/minecraft/client/render/VertexConsumer.vertex(DDD)Lnet/minecraft/client/render/VertexConsumer;"))
-    private VertexConsumer particle_core_gatherVertexVertexes(VertexConsumer instance, double x, double y, double z, Operation<VertexConsumer> original, @Share("vertex_container") LocalRef<VertexContainer> ref) {
+    @WrapOperation(method = "method_60375", at = @At(value = "INVOKE", target = "net/minecraft/client/render/VertexConsumer.vertex(FFF)Lnet/minecraft/client/render/VertexConsumer;"))
+    private VertexConsumer particle_core_gatherVertexVertexes(VertexConsumer instance, float x, float y, float z, Operation<VertexConsumer> original, @Share("vertex_container") LocalRef<VertexContainer> ref) {
         VertexContainer c = new VertexContainer();
-        c.x = (float) x;
-        c.y = (float) y;
-        c.z = (float) z;
+        c.x = x;
+        c.y = y;
+        c.z = z;
         ref.set(c);
         return instance;
     }
 
-    @WrapOperation(method = "buildGeometry", at = @At(value = "INVOKE", target = "net/minecraft/client/render/VertexConsumer.texture (FF)Lnet/minecraft/client/render/VertexConsumer;"))
+    @WrapOperation(method = "method_60375", at = @At(value = "INVOKE", target = "net/minecraft/client/render/VertexConsumer.texture (FF)Lnet/minecraft/client/render/VertexConsumer;"))
     private VertexConsumer particle_core_gatherVertexTextures(VertexConsumer instance, float u, float v, Operation<VertexConsumer> original, @Share("vertex_container") LocalRef<VertexContainer> ref) {
         VertexContainer c = ref.get();
         c.u = u;
@@ -45,7 +45,7 @@ abstract class BillboardParticleVertexMixin {
         return instance;
     }
 
-    @WrapOperation(method = "buildGeometry", at = @At(value = "INVOKE", target = "net/minecraft/client/render/VertexConsumer.color (FFFF)Lnet/minecraft/client/render/VertexConsumer;"))
+    @WrapOperation(method = "method_60375", at = @At(value = "INVOKE", target = "net/minecraft/client/render/VertexConsumer.color (FFFF)Lnet/minecraft/client/render/VertexConsumer;"))
     private VertexConsumer particle_core_gatherVertexColors(VertexConsumer instance, float red, float green, float blue, float alpha, Operation<VertexConsumer> original, @Share("vertex_container") LocalRef<VertexContainer> ref) {
         VertexContainer c = ref.get();
         c.red = red;
@@ -55,15 +55,10 @@ abstract class BillboardParticleVertexMixin {
         return instance;
     }
 
-    @WrapOperation(method = "buildGeometry", at = @At(value = "INVOKE", target = "net/minecraft/client/render/VertexConsumer.light (I)Lnet/minecraft/client/render/VertexConsumer;"))
+    @WrapOperation(method = "method_60375", at = @At(value = "INVOKE", target = "net/minecraft/client/render/VertexConsumer.light (I)Lnet/minecraft/client/render/VertexConsumer;"))
     private VertexConsumer particle_core_gatherVertexLight(VertexConsumer instance, int i, Operation<VertexConsumer> original, @Share("vertex_container") LocalRef<VertexContainer> ref) {
         VertexContainer c = ref.get();
-        c.light = i;
+        ((ParticleVertexer) instance).particle_core_particleVertex(c.x, c.y, c.z, c.red, c.green, c.blue, c.alpha, c.u, c.v, i);
         return instance;
-    }
-    @WrapOperation(method = "buildGeometry", at = @At(value = "INVOKE", target = "net/minecraft/client/render/VertexConsumer.next ()V"))
-    private void particle_core_performVertexing(VertexConsumer instance, Operation<Void> original, @Share("vertex_container") LocalRef<VertexContainer> ref) {
-        VertexContainer c = ref.get();
-        ((ParticleVertexer) instance).particle_core_particleVertex(c.x, c.y, c.z, c.red, c.green, c.blue, c.alpha, c.u, c.v, c.light);
     }
 }
