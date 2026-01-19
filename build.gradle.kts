@@ -47,6 +47,7 @@ repositories {
         name = "FzzyMaven"
         url = uri("https://maven.fzzyhmstrs.me/")
     }
+    mavenLocal()
     mavenCentral()
 }
 dependencies {
