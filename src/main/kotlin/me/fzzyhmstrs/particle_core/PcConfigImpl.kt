@@ -17,8 +17,6 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber.Companion.withIncrement
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.option.ParticlesMode
-import net.minecraft.client.particle.Particle
-import net.minecraft.client.render.Frustum
 import net.minecraft.particle.ParticleType
 import net.minecraft.registry.Registries
 import net.minecraft.util.Identifier
@@ -53,10 +51,6 @@ class PcConfigImpl: Config(Identifier("particle_core","particle_core_config"), "
 
     var asynchronousTicking = ValidatedBoolean()
 
-    private var cullingBlacklist = ValidatedIdentifier.ofRegistry(Identifier("smoke"), Registries.PARTICLE_TYPE).toSet()
-
-    private var cullingBehavior = ValidatedEnum(PcConfig.CullingBehavior.AGGRESSIVE)
-
     private var reduceAllChance = ValidatedFloat(0f, 1f, 0f)
 
     private var reduceDecreasedChance = ValidatedFloat(0f, 1f, 0f)
@@ -88,14 +82,6 @@ class PcConfigImpl: Config(Identifier("particle_core","particle_core_config"), "
     fun shouldSpawnParticle(type: ParticleType<*>): Boolean {
         val chance = byTypeReductions[Registries.PARTICLE_TYPE.getId(type) ?: return true] ?: return true
         return PcUtils.random.nextDouble() < chance
-    }
-
-    fun keepParticle(frustum: Frustum, particle: Particle): Boolean {
-        return cullingBehavior.get().shouldKeep(frustum, particle)
-    }
-
-    fun shouldBlacklistParticle(type: ParticleType<*>): Boolean {
-        return cullingBlacklist.contains(Registries.PARTICLE_TYPE.getId(type) ?: return false)
     }
 
     fun getReducedParticleSpawnType(mode: ParticlesMode): ParticlesMode {

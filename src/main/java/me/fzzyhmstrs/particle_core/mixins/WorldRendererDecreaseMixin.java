@@ -1,5 +1,7 @@
 package me.fzzyhmstrs.particle_core.mixins;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import me.fallenbreath.conditionalmixin.api.annotation.Condition;
 import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import me.fzzyhmstrs.particle_core.PcConfig;

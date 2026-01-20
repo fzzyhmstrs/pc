@@ -2,7 +2,7 @@ import com.matthewprenger.cursegradle.CurseArtifact
 import com.matthewprenger.cursegradle.CurseProject
 import com.matthewprenger.cursegradle.CurseRelation
 import com.matthewprenger.cursegradle.Options
-import org.jetbrains.kotlin.cli.common.toBooleanLenient
+import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.include
 import java.net.URI
 
 plugins {
@@ -64,13 +64,19 @@ dependencies {
     modImplementation("thedarkcolour:kotlinforforge-neoforge:$kotlinForForgeVersion")
 
     val fzzyConfigVersion: String by project
-    modImplementation("me.fzzyhmstrs:fzzy_config:$fzzyConfigVersion+$minecraftVersion"){
+    modImplementation("me.fzzyhmstrs:fzzy_config:$fzzyConfigVersion+$minecraftVersion+forge"){
         exclude("net.fabricmc.fabric-api")
     }
 
     val cmVersion: String by project
     implementation("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:$cmVersion")
     include("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-forge:$cmVersion")
+
+    compileOnly("io.github.llamalad7:mixinextras-common:0.5.3")
+    annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.3")
+
+    implementation("io.github.llamalad7:mixinextras-common:0.5.3")
+    include("io.github.llamalad7:mixinextras-forge:0.5.3")
 
 }
 
@@ -136,7 +142,7 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
             required.project("kotlin-for-forge")
             required.project("fzzy-config")
         }
-        debugMode.set(uploadDebugMode.toBooleanLenient() ?: true)
+        debugMode.set(uploadDebugMode.toBooleanStrictOrNull() ?: true)
     }
 }
 
@@ -173,7 +179,7 @@ if (System.getenv("CURSEFORGE_TOKEN") != null) {
             javaIntegration = false
             forgeGradleIntegration = false
             javaVersionAutoDetect = false
-            debug = uploadDebugMode.toBooleanLenient() ?: true
+            debug = uploadDebugMode.toBooleanStrictOrNull() ?: true
         })
     }
 }

@@ -36,8 +36,6 @@ public class LivingEntityMixin {
         if ((Object)this instanceof MobEntity) {
             return !PcConfig.INSTANCE.shouldDisablePotionParticle(PcConfig.PotionDisableType.MOBS);
         }
-        if (bl) {
-            instance.addParticle(parameters, x, y, z, velocityX, velocityY, velocityZ);
-        }
+        return true;
     }
 }

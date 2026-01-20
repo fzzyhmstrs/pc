@@ -44,11 +44,7 @@ abstract class BillboardParticleMixin extends Particle {
     @Inject(method = "buildGeometry", at = @At(value = "INVOKE", target = "net/minecraft/client/particle/BillboardParticle.getSize (F)F"), require = 0)
     private void particle_core_applyStandardRotationVector(VertexConsumer vertexConsumer, Camera camera, float tickDelta, CallbackInfo ci, @Local LocalRef<Vector3f[]> vector3fs) {
         if(this.angle == 0f) {
-            Vector3f[] newVectors = ((RotationProvider)MinecraftClient.getInstance().particleManager).particle_core_getDefaultBillboardVectors();
-            vector3fs[0] = newVectors[0];
-            vector3fs[1] = newVectors[1];
-            vector3fs[2] = newVectors[2];
-            vector3fs[3] = newVectors[3];
+            vector3fs.set(((RotationProvider)MinecraftClient.getInstance().particleManager).particle_core_getDefaultBillboardVectors());
         }
     }
 

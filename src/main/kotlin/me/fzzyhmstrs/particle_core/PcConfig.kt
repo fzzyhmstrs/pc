@@ -67,34 +67,6 @@ object PcConfig {
         }
     }
 
-    enum class CullingBehavior: EnumTranslatable {
-        NO_CULLING {
-            override fun shouldKeep(frustum: Frustum, particle: Particle): Boolean {
-                return false
-            }
-        },
-        AGGRESSIVE {
-            override fun shouldKeep(frustum: Frustum, particle: Particle): Boolean {
-                return (frustum as FrustumAccessor).frustumIntersection.testPoint(
-                    ((particle as ParticleAccessor).x - frustum.x).toFloat(),
-                    ((particle as ParticleAccessor).y - frustum.y).toFloat(),
-                    ((particle as ParticleAccessor).z - frustum.z).toFloat()
-                )
-            }
-        },
-        BOUNDING_BOX {
-            override fun shouldKeep(frustum: Frustum, particle: Particle): Boolean {
-                return frustum.isVisible(particle.boundingBox)
-            }
-        };
-
-        abstract fun shouldKeep(frustum: Frustum, particle: Particle): Boolean
-
-        override fun prefix(): String {
-            return "particle_core.particle_core_config"
-        }
-    }
-
     class Comment {
         var PotionParticles_Allowed_Values = mapOf(
             "NONE" to "(no particles removed)",
