@@ -3,12 +3,7 @@
   "package": "me.fzzyhmstrs.particle_core.mixins",
   "compatibilityLevel": "JAVA_21",
   "plugin": "me.fzzyhmstrs.particle_core.plugin.PcMixinPlugin",
-  "mixins": [
-  ],
   "client": [
-    "BillboardParticleMixin",
-    "BillboardParticleVertexMixin",
-    "BufferBuilderVertexMixin",
     "LivingEntityMixin",
     "ParticleAccessor",
     "ParticleBrightnessCacheMixin",
@@ -16,10 +11,9 @@
     "ParticleFrustumBlacklistMixin",
     "ParticleManagerAsyncMixin",
     "ParticleManagerCachedLightMixin",
-    "ParticleManagerCachedPosMixin",
+    "ParticleRendererCachedPosMixin",
     "ParticleManagerCountMixin",
     "ParticleManagerRenderDistanceMixin",
-    "ParticleManagerRotationMixin",
     "ParticleMoveAdjustMixin",
     "WorldRendererDecreaseMixin",
     "WorldRendererTypeMixin"
@@ -28,5 +22,8 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "ParticleRendererAccessor"
+  ]
 }
