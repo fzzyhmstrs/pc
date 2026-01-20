@@ -13,11 +13,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.particle.ParticleRenderer;
 import net.minecraft.client.particle.ParticleTextureSheet;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.ParticleGroup;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.util.profiler.Profilers;
 import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Final;
@@ -47,6 +43,9 @@ import java.util.function.BiConsumer;
 @Debug(export = true)
 public abstract class ParticleManagerAsyncMixin {
 
+	@Unique
+	private static final Object lock = new Object() { };
+
 	@Shadow @Final private Map<ParticleTextureSheet, ParticleRenderer<? extends Particle>> particles;
 
 	@Shadow protected abstract void addTo(ParticleGroup group, int count);
@@ -54,6 +53,13 @@ public abstract class ParticleManagerAsyncMixin {
 	@WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "com/google/common/collect/Maps.newIdentityHashMap ()Ljava/util/IdentityHashMap;"))
 	private IdentityHashMap<?, ?> particle_core_setupSynchronizedParticleMap(Operation<IdentityHashMap<?, ?>> original) {
 		return new SynchronizedIdentityHashMap<>(original.call());
+	}
+
+	@WrapOperation(method = "addParticle(Lnet/minecraft/client/particle/Particle;)V", at = @At(value = "INVOKE", target = "java/util/Queue.add (Ljava/lang/Object;)Z"))
+	private boolean particle_core_synchronizeParticleAdds(Queue<? extends Particle> instance, Object e, Operation<Boolean> original) {
+		synchronized (lock) {
+			return original.call(instance, e);
+		}
 	}
 
 	@SuppressWarnings({"SynchronizeOnNonFinalField"})
