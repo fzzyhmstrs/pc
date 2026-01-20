@@ -54,6 +54,6 @@ public class ParticleBrightnessCacheMixin implements CachedLightPreparer {
 
     @Unique
     private int getLightmap(BlockRenderView world, BlockState state, BlockPos blockPos) {
-        return WorldRenderer.getLightmapCoordinates(world, state, blockPos);
+        return WorldRenderer.getLightmapCoordinates(WorldRenderer.BrightnessGetter.DEFAULT, world, state, blockPos);
     }
 }
