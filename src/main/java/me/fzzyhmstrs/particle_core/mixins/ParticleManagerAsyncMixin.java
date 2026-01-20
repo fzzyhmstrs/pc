@@ -14,6 +14,7 @@ import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.particle.ParticleTextureSheet;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.ParticleGroup;
+import net.minecraft.util.profiler.Profilers;
 import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -70,7 +71,7 @@ public abstract class ParticleManagerAsyncMixin {
 					List<CompletableFuture<Collection<Particle>>> syncFutures = new ArrayList<>(entries.size());
 					float threshold = PcConfig.INSTANCE.getImpl().getMaxParticlesPerSheet().get() * 0.35f;
 					for (Map.Entry<ParticleTextureSheet, Queue<Particle>> entry : entries) {
-						this.world.getProfiler().push(entry.getKey().toString());
+						Profilers.get().push(entry.getKey().toString());
 						if (entry.getValue().isEmpty()) {
 							continue;
 						}
@@ -89,13 +90,13 @@ public abstract class ParticleManagerAsyncMixin {
 					}
 					for (CompletableFuture<Collection<Particle>> future : syncFutures) {
 						finalizeParticles(future.join());
-						this.world.getProfiler().pop();
+						Profilers.get().pop();
 					}
 
 					CompletableFuture.allOf(futures.toArray(new CompletableFuture[]{})).join();
 					for (CompletableFuture<Collection<Particle>> future : syncFutures) {
 						finalizeParticles(future.join());
-						this.world.getProfiler().pop();
+						Profilers.get().pop();
 					}
 				}
 			} catch (ConcurrentModificationException e) {
