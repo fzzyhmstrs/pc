@@ -10,6 +10,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.client.particle.ParticleRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -19,8 +20,8 @@ import org.spongepowered.asm.mixin.injection.At;
                 @Condition(type = Condition.Type.TESTER, tester = PcConditionTester.class)
         }
 )
-@Mixin(ParticleManager.class)
-public class ParticleManagerCachedPosMixin {
+@Mixin(ParticleRenderer.class)
+public class ParticleRendererCachedPosMixin {
 
     @WrapOperation(method = "tickParticle", at = @At(value = "INVOKE", target = "net/minecraft/client/particle/Particle.tick ()V"))
     private void particle_core_tickParticlePositions(Particle instance, Operation<Void> original) {

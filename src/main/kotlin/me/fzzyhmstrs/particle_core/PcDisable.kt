@@ -48,9 +48,9 @@ object PcDisable {
             "CULLING" to "[Impact: HIGH] Disables mixins related to particle culling (FrustumAccessor, ParticleAccessor, ParticleManagerFrustumMixin, WorldRendererFrustumMixin, ParticleFrustumBlacklistMixin)",
             "TYPE" to "[Impact: Low to Medium] Disables mixins related to particle disabling and reduction (WorldRendererTypeMixin)",
             "DECREASE" to "[Impact: Low] Disables mixins related particle settings reduction (ALL, DECREASED, MINIMAL) (WorldRendererDecreaseMixin)",
-            "LIGHTMAP" to "[Impact: Medium] Disables mixins related to light map caching (ParticleManagerCachedLightMixin, ParticleBrightnessCacheMixin, ParticleCachePosMixin)",
+            "LIGHTMAP" to "[Impact: Medium] Disables mixins related to light map caching (ParticleManagerCachedLightMixin, ParticleBrightnessCacheMixin, ParticleCachePosMixin, ParticleRendererCachedPosMixin, ParticleRendererBrightnessTickMixin)",
             "POTION" to "[Impact: Low] Disables mixins related to potion particle disabling (LivingEntityMixin)",
-            "MOVE" to "[Impact: Medium] Disables mixins related to particle movement optimization (ParticleMoveAdjustMixin, ParticleCachePosMixin)",
+            "MOVE" to "[Impact: Medium] Disables mixins related to particle movement optimization (ParticleMoveAdjustMixin, ParticleCachePosMixin, ParticleRendererCachedPosMixin)",
             "VERTEX" to "[Impact: HIGH] Disables mixins related to particle vertex drawing optimizations (BillboardParticleVertexMixin, BufferBuilderVertexMixin)",
             "COUNT" to "[Impact: Variable] Disables mixins related to max particle count setting (ParticleManagerCountMixin)",
             "ASYNC" to "[Impact: Medium] Disables asynchronous ticking of particles (ParticleManagerAsyncMixin)",
@@ -59,14 +59,14 @@ object PcDisable {
         var disableOptimizations = listOf("NONE")
 
         fun shouldDisableMixin(className: String): Boolean {
-            if(disableOptimizations.contains("ROTATION")) {
+            /*if(disableOptimizations.contains("ROTATION")) {
                 if (className.endsWith("ParticleManagerRotationMixin")
                     || className.endsWith("BillboardParticleMixin"))
                 {
                     println("Disabling [$className] due to 'ROTATION' key in particle core config!")
                     return true
                 }
-            }
+            }*/
             if(disableOptimizations.contains("CULLING")) {
                 if (className.endsWith("FrustumAccessor")
                     || className.endsWith("ParticleManagerFrustumMixin")
@@ -119,21 +119,22 @@ object PcDisable {
                     return true
                 }
                 if(disableOptimizations.contains("LIGHTMAP")) {
-                    if (className.endsWith("ParticleCachePosMixin"))
+                    if (className.endsWith("ParticleCachePosMixin")
+                        || className.endsWith("ParticleRendererCachedPosMixin"))
                     {
                         println("Disabling [$className] due to 'MOVE' and 'LIGHTMAP' key in particle core config!")
                         return true
                     }
                 }
             }
-            if(disableOptimizations.contains("VERTEX")) {
+            /*if(disableOptimizations.contains("VERTEX")) {
                 if (className.endsWith("BufferBuilderVertexMixin")
                     || className.endsWith("BillboardParticleVertexMixin"))
                 {
                     println("Disabling [$className] due to 'VERTEX' key in particle core config!")
                     return true
                 }
-            }
+            }*/
             if(disableOptimizations.contains("COUNT")) {
                 if (className.endsWith("ParticleManagerCountMixin"))
                 {

@@ -43,10 +43,4 @@ public class ParticleManagerCachedLightMixin implements CachedLightProvider {
         int size = cachedLightMap.size();
         cachedLightMap = new ConcurrentHashMap<>(size, 0.75f);
     }
-
-    @WrapOperation(method = "tickParticle", at = @At(value = "INVOKE", target = "net/minecraft/client/particle/Particle.tick ()V"))
-    private void particle_core_tickParticleLightUpdates(Particle instance, Operation<Void> original) {
-        ((CachedLightPreparer) instance).particle_core_tickLightUpdate();
-        original.call(instance);
-    }
 }
