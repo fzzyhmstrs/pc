@@ -12,7 +12,7 @@
     "ParticleFrustumBlacklistMixin",
     "ParticleManagerAsyncMixin",
     "ParticleManagerCachedLightMixin",
-    "ParticleManagerCountMixin",
+    "ParticleRendererCountMixin",
     "ParticleManagerFrustumMixin",
     "ParticleManagerRenderDistanceMixin",
     "ParticleMoveAdjustMixin",
@@ -20,7 +20,7 @@
     "ParticleRendererFrustumMixin",
     "ClientWorldDecreaseMixin",
     "WorldRendererFrustumMixin",
-    "WorldRendererTypeMixin"
+    "ParticleManagerTypeMixin"
   ],
   "server": [
   ],

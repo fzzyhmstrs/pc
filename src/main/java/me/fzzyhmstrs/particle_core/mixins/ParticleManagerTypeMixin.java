@@ -7,7 +7,7 @@ import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.registry.Registries;
@@ -26,14 +26,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
                 @Condition(type = Condition.Type.TESTER, tester = PcConditionTester.class)
         }
 )
-@Mixin(WorldRenderer.class)
-public class WorldRendererTypeMixin {
+@Mixin(ParticleManager.class)
+public class ParticleManagerTypeMixin {
 
     @Unique
     private final TagKey<ParticleType<?>> tag = TagKey.of(RegistryKeys.PARTICLE_TYPE, Identifier.of("particle_core","excluded_particles"));
 
-    @Inject(method = "spawnParticle(Lnet/minecraft/particle/ParticleEffect;ZZDDDDDD)Lnet/minecraft/client/particle/Particle;", at = @At("HEAD"), cancellable = true)
-    private void particle_core_excludeAndChanceParticles(ParticleEffect parameters, boolean alwaysSpawn, boolean canSpawnOnMinimal, double x, double y, double z, double velocityX, double velocityY, double velocityZ, CallbackInfoReturnable<Particle> cir){
+    @Inject(method = "createParticle", at = @At("RETURN"), cancellable = true)
+    private void particle_core_excludeAndChanceParticles(ParticleEffect parameters, double x, double y, double z, double velocityX, double velocityY, double velocityZ, CallbackInfoReturnable<Particle> cir) {
         if (PcConfig.INSTANCE.getImpl().getDisableParticles().get()) cir.setReturnValue(null);
         if(Registries.PARTICLE_TYPE.getEntry(parameters.getType()).isIn(tag)) cir.setReturnValue(null);
         if(!PcConfig.INSTANCE.getImpl().shouldSpawnParticle(parameters.getType())) cir.setReturnValue(null);
