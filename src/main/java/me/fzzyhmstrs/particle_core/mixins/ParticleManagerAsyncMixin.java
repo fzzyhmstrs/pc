@@ -57,6 +57,16 @@ public abstract class ParticleManagerAsyncMixin {
 		return new SynchronizedIdentityHashMap<>(original.call());
 	}
 
+	@Unique
+	private static final Object lock = new Object() { };
+
+	@WrapOperation(method = "addParticle(Lnet/minecraft/client/particle/Particle;)V", at = @At(value = "INVOKE", target = "java/util/Queue.add (Ljava/lang/Object;)Z"))
+	private boolean particle_core_synchronizeParticleAdds(Queue<? extends Particle> instance, Object e, Operation<Boolean> original) {
+		synchronized (lock) {
+			return original.call(instance, e);
+		}
+	}
+
 	@SuppressWarnings({"SynchronizeOnNonFinalField"})
 	@WrapOperation(method = "tick", at = @At(value = "INVOKE", target = "java/util/Map.forEach (Ljava/util/function/BiConsumer;)V"))
 	private void particle_core_asyncParticleTicking(Map<ParticleTextureSheet, Queue<Particle>> instance, BiConsumer<? super ParticleTextureSheet, ? extends Queue<Particle>> v, Operation<Void> original) {
