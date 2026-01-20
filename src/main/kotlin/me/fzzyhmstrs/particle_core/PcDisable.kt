@@ -45,14 +45,14 @@ object PcDisable {
     class DisabledOptimizations {
         var _Disable_Optimizations_Options = mapOf(
             "ROTATION" to "[Impact: Medium] Disables mixins related to vertex rotation caching (ParticleManagerRotationMixin, BillboardParticleMixin)",
-            "TYPE" to "[Impact: Low to Medium] Disables mixins related to particle disabling and reduction (WorldRendererTypeMixin)",
+            "TYPE" to "[Impact: Low to Medium] Disables mixins related to particle disabling and reduction (ParticleManagerTypeMixin)",
             "DECREASE" to "[Impact: Low] Disables mixins related particle settings reduction (ALL, DECREASED, MINIMAL) (ClientWorldDecreaseMixin)",
             "LIGHTMAP" to "[Impact: Medium] Disables mixins related to light map caching (ParticleManagerCachedLightMixin, ParticleBrightnessCacheMixin, ParticleCachePosMixin, ParticleRendererCachedPosMixin, ParticleRendererBrightnessTickMixin)",
             "POTION" to "[Impact: Low] Disables mixins related to potion particle disabling (LivingEntityMixin)",
             "MOVE" to "[Impact: Medium] Disables mixins related to particle movement optimization (ParticleMoveAdjustMixin, ParticleCachePosMixin, ParticleRendererCachedPosMixin)",
             "VERTEX" to "[Impact: HIGH] Disables mixins related to particle vertex drawing optimizations (BillboardParticleVertexMixin, BufferBuilderVertexMixin)",
-            "COUNT" to "[Impact: Variable] Disables mixins related to max particle count setting (ParticleManagerCountMixin)",
-            "ASYNC" to "[Impact: Medium] Disables asynchronous ticking of particles (ParticleManagerAsyncMixin)",
+            "COUNT" to "[Impact: Variable] Disables mixins related to max particle count setting (ParticleRendererCountMixin)",
+            "ASYNC" to "[Impact: Medium] Disables asynchronous ticking of particles (ParticleManagerAsyncMixin, ParticleRendererAccessor)",
             "RENDER_DISTANCE" to "[Impact: Variable] Disables mixins that control max particle render distance (ParticleManagerRenderDistanceMixin, ParticleAccessor, ParticleRendererRenderDistanceMixin)")
 
         var disableOptimizations = listOf("NONE")
@@ -67,7 +67,7 @@ object PcDisable {
                 }
             }*/
             if(disableOptimizations.contains("TYPE")) {
-                if (className.endsWith("WorldRendererTypeMixin"))
+                if (className.endsWith("ParticleManagerTypeMixin"))
                 {
                     println("Disabling [$className] due to 'TYPE' key in particle core config!")
                     return true
@@ -119,14 +119,15 @@ object PcDisable {
                 }
             }*/
             if(disableOptimizations.contains("COUNT")) {
-                if (className.endsWith("ParticleManagerCountMixin"))
+                if (className.endsWith("ParticleRendererCountMixin"))
                 {
                     println("Disabling [$className] due to 'COUNT' key in particle core config!")
                     return true
                 }
             }
             if(disableOptimizations.contains("ASYNC")) {
-                if (className.endsWith("ParticleManagerAsyncMixin"))
+                if (className.endsWith("ParticleManagerAsyncMixin")
+                    || className.endsWith("ParticleRendererAccessor"))
                 {
                     println("Disabling [$className] due to 'ASYNC' key in particle core config!")
                     return true

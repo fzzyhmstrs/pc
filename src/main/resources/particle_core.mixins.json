@@ -11,12 +11,12 @@
     "ParticleFrustumBlacklistMixin",
     "ParticleManagerAsyncMixin",
     "ParticleManagerCachedLightMixin",
-    "ParticleManagerCountMixin",
+    "ParticleRendererCountMixin",
     "ParticleManagerRenderDistanceMixin",
     "ParticleMoveAdjustMixin",
     "ParticleRendererCachedPosMixin",
     "ClientWorldDecreaseMixin",
-    "WorldRendererTypeMixin"
+    "ParticleManagerTypeMixin"
   ],
   "server": [
   ],
