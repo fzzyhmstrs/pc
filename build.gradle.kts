@@ -62,7 +62,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
 
     val fzzyConfigVersion: String by project
-    modImplementation("me.fzzyhmstrs:fzzy_config:$fzzyConfigVersion+1.21.3"){
+    modImplementation("me.fzzyhmstrs:fzzy_config:$fzzyConfigVersion+$minecraftVersion"){
         exclude("net.fabricmc.fabric-api")
     }
 
