@@ -46,14 +46,14 @@ object PcDisable {
         var _Disable_Optimizations_Options = mapOf(
             "ROTATION" to "[Impact: Medium] Disables mixins related to vertex rotation caching (ParticleManagerRotationMixin, BillboardParticleMixin)",
             "TYPE" to "[Impact: Low to Medium] Disables mixins related to particle disabling and reduction (WorldRendererTypeMixin)",
-            "DECREASE" to "[Impact: Low] Disables mixins related particle settings reduction (ALL, DECREASED, MINIMAL) (WorldRendererDecreaseMixin)",
+            "DECREASE" to "[Impact: Low] Disables mixins related particle settings reduction (ALL, DECREASED, MINIMAL) (ClientWorldDecreaseMixin)",
             "LIGHTMAP" to "[Impact: Medium] Disables mixins related to light map caching (ParticleManagerCachedLightMixin, ParticleBrightnessCacheMixin, ParticleCachePosMixin, ParticleRendererCachedPosMixin, ParticleRendererBrightnessTickMixin)",
             "POTION" to "[Impact: Low] Disables mixins related to potion particle disabling (LivingEntityMixin)",
             "MOVE" to "[Impact: Medium] Disables mixins related to particle movement optimization (ParticleMoveAdjustMixin, ParticleCachePosMixin, ParticleRendererCachedPosMixin)",
             "VERTEX" to "[Impact: HIGH] Disables mixins related to particle vertex drawing optimizations (BillboardParticleVertexMixin, BufferBuilderVertexMixin)",
             "COUNT" to "[Impact: Variable] Disables mixins related to max particle count setting (ParticleManagerCountMixin)",
             "ASYNC" to "[Impact: Medium] Disables asynchronous ticking of particles (ParticleManagerAsyncMixin)",
-            "RENDER_DISTANCE" to "[Impact: Variable] Disables mixins that control max particle render distance (ParticleManagerRenderDistanceMixin, ParticleAccessor)")
+            "RENDER_DISTANCE" to "[Impact: Variable] Disables mixins that control max particle render distance (ParticleManagerRenderDistanceMixin, ParticleAccessor, ParticleRendererRenderDistanceMixin)")
 
         var disableOptimizations = listOf("NONE")
 
@@ -74,7 +74,7 @@ object PcDisable {
                 }
             }
             if(disableOptimizations.contains("DECREASE")) {
-                if (className.endsWith("WorldRendererDecreaseMixin"))
+                if (className.endsWith("ClientWorldDecreaseMixin"))
                 {
                     println("Disabling [$className] due to 'DECREASE' key in particle core config!")
                     return true
