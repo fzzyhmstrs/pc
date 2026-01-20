@@ -28,7 +28,7 @@ public abstract class BufferBuilderVertexMixin implements ParticleVertexer {
 		MemoryUtil.memPutFloat(l + 8L, z);
 		MemoryUtil.memPutFloat(l + 12L, u);
 		MemoryUtil.memPutFloat(l + 16L, v);
-		putColor(l + 20L, ColorHelper.Argb.fromFloats(alpha, red, green, blue));
+		putColor(l + 20L, ColorHelper.fromFloats(alpha, red, green, blue));
 		putInt(l + 24L, light);
 	}
 }
