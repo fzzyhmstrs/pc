@@ -6,4 +6,6 @@ public interface FrustumProvider {
 
     void particle_core_setFrustum(Frustum frustum);
 
+    Frustum particle_core_getFrustum();
+
 }

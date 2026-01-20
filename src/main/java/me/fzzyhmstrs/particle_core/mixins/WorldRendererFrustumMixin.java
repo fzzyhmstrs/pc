@@ -32,7 +32,7 @@ public class WorldRendererFrustumMixin {
     @Shadow @Final private MinecraftClient client;
 
     @Inject(method = "render", at = @At(value = "CONSTANT", args = "stringValue=clear"), require = 0)
-    private void particle_core_passFrustumToParticleManager1(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, Matrix4f positionMatrix, Matrix4f projectionMatrix, GpuBufferSlice fog, Vector4f fogColor, boolean shouldRenderSky, CallbackInfo ci, @Local Frustum frustum){
+    private void particle_core_passFrustumToParticleManager1(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, Matrix4f positionMatrix, Matrix4f matrix4f, Matrix4f projectionMatrix, GpuBufferSlice fogBuffer, Vector4f fogColor, boolean renderSky, CallbackInfo ci, @Local Frustum frustum){
         ((FrustumProvider)this.client.particleManager).particle_core_setFrustum(frustum);
     }
 }
