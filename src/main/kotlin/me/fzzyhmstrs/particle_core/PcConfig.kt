@@ -78,9 +78,9 @@ object PcConfig {
         AGGRESSIVE {
             override fun shouldKeep(frustum: Frustum, particle: Particle): Boolean {
                 return (frustum as FrustumAccessor).frustumIntersection.testPoint(
-                    ((particle as ParticleAccessor).x - frustum.x).toFloat(),
-                    ((particle as ParticleAccessor).y - frustum.y).toFloat(),
-                    ((particle as ParticleAccessor).z - frustum.z).toFloat()
+                    ((particle as ParticleAccessor).x - frustum.getX()).toFloat(),
+                    ((particle as ParticleAccessor).y - frustum.getY()).toFloat(),
+                    ((particle as ParticleAccessor).z - frustum.getZ()).toFloat()
                 )
             }
         },
