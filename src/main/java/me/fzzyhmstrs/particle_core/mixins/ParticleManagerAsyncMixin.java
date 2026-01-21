@@ -6,12 +6,14 @@ import me.fallenbreath.conditionalmixin.api.annotation.Condition;
 import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import me.fzzyhmstrs.particle_core.PcConfig;
 import me.fzzyhmstrs.particle_core.SynchronizedIdentityHashMap;
+import me.fzzyhmstrs.particle_core.interfaces.TickResult;
 import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.particle.ParticleTextureSheet;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.ParticleGroup;
+import net.minecraft.util.crash.CrashException;
 import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,10 +29,14 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 @Restriction(
 		require = {
@@ -40,6 +46,9 @@ import java.util.function.BiConsumer;
 @Mixin(value = ParticleManager.class, priority = 100000)
 @Debug(export = true)
 public abstract class ParticleManagerAsyncMixin {
+
+	@Unique
+	private static final Set<Class<?>> unsafeParticles = ConcurrentHashMap.newKeySet();
 
 	@Shadow @Final private Map<ParticleTextureSheet, Queue<Particle>> particles;
 
@@ -75,8 +84,7 @@ public abstract class ParticleManagerAsyncMixin {
 			try {
 				var entries = this.particles.entrySet();
 				synchronized (this.particles) {
-					List<CompletableFuture<Collection<Particle>>> futures = new ArrayList<>(entries.size());
-					List<CompletableFuture<Collection<Particle>>> syncFutures = new ArrayList<>(entries.size());
+					List<CompletableFuture<TickResult.Results>> futures = new ArrayList<>(entries.size());
 					float threshold = PcConfig.INSTANCE.getImpl().getMaxParticlesPerSheet().get() * 0.35f;
 					for (Map.Entry<ParticleTextureSheet, Queue<Particle>> entry : entries) {
 						this.world.getProfiler().push(entry.getKey().toString());
@@ -87,50 +95,88 @@ public abstract class ParticleManagerAsyncMixin {
 							futures.add(CompletableFuture.supplyAsync(() -> asyncTickParticles(entry.getValue())));
 						}
 					}
+					//this is a second loop so that all the async futures can be pushed to their queue above without getting blocked by sync particle ticking
 					for (Map.Entry<ParticleTextureSheet, Queue<Particle>> entry : entries) {
-						if (entry.getValue().isEmpty()) {
-							syncFutures.add(CompletableFuture.completedFuture(List.of()));
-							continue;
+						if (entry.getValue().isEmpty() || threshold >= entry.getValue().size()) {
+							syncTickParticles(entry.getValue());
+							this.world.getProfiler().pop();
 						}
-						if (threshold >= entry.getValue().size()) {
-							syncFutures.add(CompletableFuture.completedFuture(syncTickParticles(entry.getValue())));
-						}
-					}
-					for (CompletableFuture<Collection<Particle>> future : syncFutures) {
-						finalizeParticles(future.join());
-						this.world.getProfiler().pop();
 					}
 
 					CompletableFuture.allOf(futures.toArray(new CompletableFuture[]{})).join();
-					for (CompletableFuture<Collection<Particle>> future : futures) {
+					for (CompletableFuture<TickResult.Results> future : futures) {
 						finalizeParticles(future.join());
 						this.world.getProfiler().pop();
 					}
 				}
-			} catch (ConcurrentModificationException e) {
-				PcConfig.INSTANCE.getLogger().error("Asynchronous particle ticking encountered a concurrency problem; disabling");
-				PcConfig.INSTANCE.getImpl().getAsynchronousTicking().validateAndSet(false);
 			} catch (Exception e) {
-				throw new RuntimeException("Unhandled exception while ticking particles", e);
+				PcConfig.INSTANCE.getLogger().error("Asynchronous particle ticking may have encountered a concurrency problem; disabling", e);
+				PcConfig.INSTANCE.getImpl().getAsynchronousTicking().validateAndSet(false);
 			}
 		}
 	}
 
 	@Unique
-	private Collection<Particle> syncTickParticles(Collection<Particle> particles) {
+	private void syncTickParticles(Collection<Particle> particles) {
 		this.tickParticles(particles);
-		return List.of(); //empty list because we've already fully process particles synchronously
 	}
 
 	@Unique
-	private Collection<Particle> asyncTickParticles(Collection<Particle> particles) {
-		particles.parallelStream().peek(this::tickParticle).forEach((p) -> {});
-		return particles;
+	private TickResult.Results asyncTickParticles(Collection<Particle> particleCollection) {
+		Consumer<Particle> tick = this::tickParticle;
+
+		List<TickResult> results = particleCollection.parallelStream().map((p) -> tickParticleSafe(tick, p)).toList();
+		return new TickResult.Results(results, particleCollection);
 	}
 
 	@Unique
-	private void finalizeParticles(Collection<Particle> particles) {
-		Iterator<Particle> iterator = particles.iterator();
+	private TickResult tickParticleSafe(Consumer<Particle> tick, Particle particle) {
+		try {
+			if (unsafeParticles.contains(particle.getClass())) {
+				return new TickResult(true, particle);
+			}
+			tick.accept(particle);
+		} catch (CrashException e) {
+			if (e.getCause() != null) {
+				String msg = e.getCause().getMessage();
+				if (msg != null && (Objects.equals(msg, "Accessing LegacyRandomSource from multiple threads") || msg.contains("ThreadLocalRandom accessed from a different thread"))) {
+					unsafeParticles.add(particle.getClass());
+					return new TickResult(true, particle);
+				} else if (checkStackTrace(e.getCause())) {
+					unsafeParticles.add(particle.getClass());
+					return new TickResult(true, particle);
+				}
+			}
+			throw e; //rethrow unknown exception
+		}
+		return new TickResult(false, particle);
+	}
+
+	@Unique
+	private boolean checkStackTrace(Throwable e) {
+		StackTraceElement[] elements = e.getStackTrace();
+		if (elements.length == 0) return false;
+		String clazz = elements[0].getClassName();
+		if (clazz.contains("ThreadingDetector") || clazz.contains("CheckedThreadLocalRandom")) {
+			return true;
+		}
+		return false;
+	}
+
+	@Unique
+	private void finalizeParticles(TickResult.Results result) {
+		int i = 0;
+		for (TickResult tr : result.results()) {
+			if (tr.failure()) { //assign failures to the unsafe set and get them ticked
+				i += 1;
+				this.tickParticle(tr.particle());
+			}
+		}
+		if (i > (result.originalCollection().size() * 2 / 3)) {
+			PcConfig.INSTANCE.getLogger().error("Asynchronous particle ticking encountered issues with over 2/3 of particles; disabling");
+			PcConfig.INSTANCE.getImpl().getAsynchronousTicking().validateAndSet(false);
+		}
+		Iterator<? extends Particle> iterator = result.originalCollection().iterator();
 		while (iterator.hasNext()) {
 			Particle particle = iterator.next();
 			if (particle.isAlive()) continue;
