@@ -83,6 +83,7 @@ public abstract class ParticleManagerAsyncMixin {
 							futures.add(CompletableFuture.supplyAsync(() -> asyncTickParticles(entry.getValue())));
 						}
 					}
+					//this is a second loop so that all the async futures can be pushed to their queue above without getting blocked by a sync future completing
 					for (Map.Entry<ParticleTextureSheet, ParticleRenderer<?>> entry : entries) {
 						if (entry.getValue().isEmpty()) {
 							syncFutures.add(CompletableFuture.completedFuture(List.of()));
@@ -98,7 +99,7 @@ public abstract class ParticleManagerAsyncMixin {
 					}
 
 					CompletableFuture.allOf(futures.toArray(new CompletableFuture[]{})).join();
-					for (CompletableFuture<Collection<? extends Particle>> future : syncFutures) {
+					for (CompletableFuture<Collection<? extends Particle>> future : futures) {
 						finalizeParticles(future.join());
 						Profilers.get().pop();
 					}
