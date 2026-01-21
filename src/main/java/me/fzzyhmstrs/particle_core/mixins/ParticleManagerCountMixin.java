@@ -7,8 +7,6 @@ import me.fallenbreath.conditionalmixin.api.annotation.Condition;
 import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import me.fzzyhmstrs.particle_core.PcConfig;
 import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.particle.ParticleTextureSheet;
@@ -19,7 +17,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.function.Function;
 
-@Environment(EnvType.CLIENT)
 @Restriction(
 		require = {
 				@Condition(type = Condition.Type.TESTER, tester = PcConditionTester.class)

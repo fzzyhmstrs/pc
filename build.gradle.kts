@@ -2,7 +2,6 @@ import com.matthewprenger.cursegradle.CurseArtifact
 import com.matthewprenger.cursegradle.CurseProject
 import com.matthewprenger.cursegradle.CurseRelation
 import com.matthewprenger.cursegradle.Options
-import org.jetbrains.kotlin.cli.common.toBooleanLenient
 import java.net.URI
 
 plugins {
@@ -71,7 +70,7 @@ dependencies {
     modImplementation("thedarkcolour:kotlinforforge-neoforge:$kotlinForForgeVersion")
 
     val fzzyConfigVersion: String by project
-    modImplementation("me.fzzyhmstrs:fzzy_config:$fzzyConfigVersion+$minecraftVersion"){
+    modImplementation("me.fzzyhmstrs:fzzy_config:$fzzyConfigVersion+$minecraftVersion+neoforge"){
         exclude("net.fabricmc.fabric-api")
     }
 
@@ -142,7 +141,7 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
             required.project("kotlin-for-forge")
             required.project("fzzy-config")
         }
-        debugMode.set(uploadDebugMode.toBooleanLenient() ?: true)
+        debugMode.set(uploadDebugMode.toBooleanStrictOrNull() ?: true)
     }
 }
 
@@ -178,7 +177,7 @@ if (System.getenv("CURSEFORGE_TOKEN") != null) {
             javaIntegration = false
             forgeGradleIntegration = false
             javaVersionAutoDetect = false
-            debug = uploadDebugMode.toBooleanLenient() ?: true
+            debug = uploadDebugMode.toBooleanStrictOrNull() ?: true
         })
     }
 }
