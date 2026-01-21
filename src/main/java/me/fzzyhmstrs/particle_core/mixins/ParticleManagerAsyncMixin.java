@@ -97,7 +97,7 @@ public abstract class ParticleManagerAsyncMixin {
 					}
 
 					CompletableFuture.allOf(futures.toArray(new CompletableFuture[]{})).join();
-					for (CompletableFuture<Collection<? extends Particle>> future : syncFutures) {
+					for (CompletableFuture<Collection<? extends Particle>> future : futures) {
 						finalizeParticles(future.join());
 						Profilers.get().pop();
 					}
