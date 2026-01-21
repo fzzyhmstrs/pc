@@ -5,8 +5,6 @@ import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import me.fzzyhmstrs.fzzy_config.util.TriState;
 import me.fzzyhmstrs.particle_core.interfaces.BlockPosStorer;
 import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.world.ClientWorld;
@@ -18,7 +16,6 @@ import org.spongepowered.asm.mixin.Unique;
 
 import javax.annotation.Nullable;
 
-@Environment(EnvType.CLIENT)
 @Restriction(
         require = {
                 @Condition(type = Condition.Type.TESTER, tester = PcConditionTester.class)
