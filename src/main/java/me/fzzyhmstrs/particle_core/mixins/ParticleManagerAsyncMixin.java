@@ -23,9 +23,6 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.ConcurrentModificationException;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -33,7 +30,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
@@ -58,9 +54,9 @@ public abstract class ParticleManagerAsyncMixin {
 
 	@Shadow protected abstract void addTo(ParticleGroup group, int count);
 
-	@WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "com/google/common/collect/Maps.newTreeMap (Ljava/util/Comparator;)Ljava/util/TreeMap;"))
-	private TreeMap<?, ?> particle_core_setupSynchronizedParticleMap(Comparator<?> comparator, Operation<TreeMap<?, ?>> original) {
-		return original.call(comparator); //forge gets to try without synchronization bc they decided they needed to change this map
+	@WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "com/google/common/collect/Maps.newIdentityHashMap ()Ljava/util/IdentityHashMap;"))
+	private IdentityHashMap<?, ?> particle_core_setupSynchronizedParticleMap(Operation<IdentityHashMap<?, ?>> original) {
+		return new SynchronizedIdentityHashMap<>(original.call());
 	}
 
 	@WrapOperation(method = "addParticle(Lnet/minecraft/client/particle/Particle;)V", at = @At(value = "INVOKE", target = "java/util/Queue.add (Ljava/lang/Object;)Z"))
