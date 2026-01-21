@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_16",
   "plugin": "me.fzzyhmstrs.particle_core.plugin.PcMixinPlugin",
   "client": [
+    "ClientWorldDecreaseMixin",
     "FrustumAccessor",
     "LivingEntityMixin",
     "ParticleAccessor",
@@ -12,15 +13,16 @@
     "ParticleFrustumBlacklistMixin",
     "ParticleManagerAsyncMixin",
     "ParticleManagerCachedLightMixin",
-    "ParticleRendererCountMixin",
     "ParticleManagerFrustumMixin",
     "ParticleManagerRenderDistanceMixin",
+    "ParticleManagerTypeMixin",
     "ParticleMoveAdjustMixin",
+    "ParticleRendererBrightnessTickMixin",
     "ParticleRendererCachedPosMixin",
+    "ParticleRendererCountMixin",
     "ParticleRendererFrustumMixin",
-    "ClientWorldDecreaseMixin",
-    "WorldRendererFrustumMixin",
-    "ParticleManagerTypeMixin"
+    "ParticleRendererRenderDistanceMixin",
+    "WorldRendererFrustumMixin"
   ],
   "server": [
   ],
