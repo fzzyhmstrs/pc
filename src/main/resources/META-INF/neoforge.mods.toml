@@ -40,6 +40,6 @@ side = "CLIENT"
 [[dependencies.particle_core]]
 modId = "fzzy_config"
 type = "REQUIRED"
-versionRange = "[0.4.1,)"
+versionRange = "[0.7.5,)"
 ordering = "AFTER"
 side = "BOTH"
