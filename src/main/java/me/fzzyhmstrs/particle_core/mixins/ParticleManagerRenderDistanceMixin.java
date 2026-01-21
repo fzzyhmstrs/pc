@@ -5,11 +5,11 @@ import me.fallenbreath.conditionalmixin.api.annotation.Condition;
 import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import me.fzzyhmstrs.particle_core.PcConfig;
 import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.client.particle.ParticleTextureSheet;
 import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -19,7 +19,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Environment(EnvType.CLIENT)
+import java.util.Queue;
+
 @Restriction(
 		require = {
 				@Condition(type = Condition.Type.TESTER, tester = PcConditionTester.class)
@@ -28,12 +29,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = ParticleManager.class, priority = 100000)
 public class ParticleManagerRenderDistanceMixin {
 
-	@Inject(method = "renderParticles(Lnet/minecraft/client/render/Camera;FLnet/minecraft/client/render/VertexConsumerProvider$Immediate;)V", at = @At("HEAD"))
-	private void particle_core_setupViewDistance(Camera camera, float tickDelta, VertexConsumerProvider.Immediate vertexConsumers, CallbackInfo ci) {
+	@Inject(method = "renderParticleType", at = @At("HEAD"))
+	private static void particle_core_setupViewDistance(Camera arg, float f, VertexConsumerProvider.Immediate arg2, ParticleTextureSheet arg3, Queue<Particle> queue, Frustum frustum, CallbackInfo ci) {
 		PcConfig.INSTANCE.getImpl().setupParticleViewDistance();
 	}
 
-	@WrapWithCondition(method = "renderParticles(Lnet/minecraft/client/render/Camera;FLnet/minecraft/client/render/VertexConsumerProvider$Immediate;Lnet/minecraft/client/particle/ParticleTextureSheet;Ljava/util/Queue;)V", at = @At(value = "INVOKE", target = "net/minecraft/client/particle/Particle.render (Lnet/minecraft/client/render/VertexConsumer;Lnet/minecraft/client/render/Camera;F)V"))
+	@WrapWithCondition(method = "renderParticleType", at = @At(value = "INVOKE", target = "net/minecraft/client/particle/Particle.render (Lnet/minecraft/client/render/VertexConsumer;Lnet/minecraft/client/render/Camera;F)V"))
 	private static boolean particle_core_buildGeoIfWithinRenderDistance(Particle instance, VertexConsumer vertexConsumer, Camera camera, float v) {
 		return PcConfig.INSTANCE.shouldRenderParticle(
 				((ParticleAccessor)instance).getX(),

@@ -3,9 +3,7 @@ package me.fzzyhmstrs.particle_core
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi
 import me.fzzyhmstrs.fzzy_config.api.RegisterType
 import me.fzzyhmstrs.fzzy_config.util.EnumTranslatable
-import me.fzzyhmstrs.particle_core.mixins.FrustumAccessor
 import me.fzzyhmstrs.particle_core.mixins.ParticleAccessor
-import net.fabricmc.api.ClientModInitializer
 import net.minecraft.client.particle.Particle
 import net.minecraft.client.render.Frustum
 import net.minecraft.util.math.Vec3d
@@ -64,34 +62,6 @@ object PcConfig {
         PLAYER(PotionDisableType.OTHER_PLAYER, PotionDisableType.SELF),
         MOBS(PotionDisableType.MOBS),
         ALL(PotionDisableType.ALL);
-
-        override fun prefix(): String {
-            return "particle_core.particle_core_config"
-        }
-    }
-
-    enum class CullingBehavior: EnumTranslatable {
-        NO_CULLING {
-            override fun shouldKeep(frustum: Frustum, particle: Particle): Boolean {
-                return false
-            }
-        },
-        AGGRESSIVE {
-            override fun shouldKeep(frustum: Frustum, particle: Particle): Boolean {
-                return (frustum as FrustumAccessor).frustumIntersection.testPoint(
-                    ((particle as ParticleAccessor).x - frustum.getX()).toFloat(),
-                    ((particle as ParticleAccessor).y - frustum.getY()).toFloat(),
-                    ((particle as ParticleAccessor).z - frustum.getZ()).toFloat()
-                )
-            }
-        },
-        BOUNDING_BOX {
-            override fun shouldKeep(frustum: Frustum, particle: Particle): Boolean {
-                return frustum.isVisible(particle.boundingBox)
-            }
-        };
-
-        abstract fun shouldKeep(frustum: Frustum, particle: Particle): Boolean
 
         override fun prefix(): String {
             return "particle_core.particle_core_config"

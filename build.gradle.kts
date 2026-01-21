@@ -71,7 +71,7 @@ dependencies {
     modImplementation("thedarkcolour:kotlinforforge-neoforge:$kotlinForForgeVersion")
 
     val fzzyConfigVersion: String by project
-    modImplementation("me.fzzyhmstrs:fzzy_config:$fzzyConfigVersion+$minecraftVersion"){
+    modImplementation("me.fzzyhmstrs:fzzy_config:$fzzyConfigVersion+$minecraftVersion+neoforge"){
         exclude("net.fabricmc.fabric-api")
     }
 
