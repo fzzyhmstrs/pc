@@ -102,7 +102,7 @@ public abstract class ParticleManagerAsyncMixin {
 					}
 
 					CompletableFuture.allOf(futures.toArray(new CompletableFuture[]{})).join();
-					for (CompletableFuture<Collection<Particle>> future : syncFutures) {
+					for (CompletableFuture<Collection<Particle>> future : futures) {
 						finalizeParticles(future.join());
 						this.world.getProfiler().pop();
 					}
