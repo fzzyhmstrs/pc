@@ -29,7 +29,7 @@ public abstract class ParticleRendererRenderDistanceMixin {
 				((ParticleAccessor)instance).getX(),
 				((ParticleAccessor)instance).getY(),
 				((ParticleAccessor)instance).getZ(),
-				camera.getPos()
+				camera.getCameraPos()
 		);
 	}
 
