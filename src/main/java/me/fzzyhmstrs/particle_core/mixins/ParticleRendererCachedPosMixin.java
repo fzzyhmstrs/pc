@@ -6,15 +6,11 @@ import me.fallenbreath.conditionalmixin.api.annotation.Condition;
 import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import me.fzzyhmstrs.particle_core.interfaces.BlockPosStorer;
 import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.particle.ParticleRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Environment(EnvType.CLIENT)
 @Restriction(
         require = {
                 @Condition(type = Condition.Type.TESTER, tester = PcConditionTester.class)

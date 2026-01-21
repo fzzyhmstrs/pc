@@ -7,8 +7,6 @@ import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import me.fzzyhmstrs.particle_core.PcConfig;
 import me.fzzyhmstrs.particle_core.SynchronizedIdentityHashMap;
 import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.particle.ParticleRenderer;
@@ -24,16 +22,17 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 
-@Environment(EnvType.CLIENT)
 @Restriction(
 		require = {
 				@Condition(type = Condition.Type.TESTER, tester = PcConditionTester.class)
@@ -50,9 +49,9 @@ public abstract class ParticleManagerAsyncMixin {
 
 	@Shadow protected abstract void addTo(ParticleGroup group, int count);
 
-	@WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "com/google/common/collect/Maps.newIdentityHashMap ()Ljava/util/IdentityHashMap;"))
-	private IdentityHashMap<?, ?> particle_core_setupSynchronizedParticleMap(Operation<IdentityHashMap<?, ?>> original) {
-		return new SynchronizedIdentityHashMap<>(original.call());
+	@WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "com/google/common/collect/Maps.newTreeMap (Ljava/util/Comparator;)Ljava/util/TreeMap;"))
+	private TreeMap<?, ?> particle_core_setupSynchronizedParticleMap(Comparator<?> comparator, Operation<TreeMap<?, ?>> original) {
+		return original.call(comparator); //forge gets to try without synchronization bc they decided they needed to change this map
 	}
 
 	@WrapOperation(method = "addParticle(Lnet/minecraft/client/particle/Particle;)V", at = @At(value = "INVOKE", target = "java/util/Queue.add (Ljava/lang/Object;)Z"))

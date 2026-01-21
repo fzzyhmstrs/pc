@@ -4,19 +4,20 @@
   "compatibilityLevel": "JAVA_21",
   "plugin": "me.fzzyhmstrs.particle_core.plugin.PcMixinPlugin",
   "client": [
+    "ClientWorldDecreaseMixin",
     "LivingEntityMixin",
     "ParticleAccessor",
     "ParticleBrightnessCacheMixin",
     "ParticleCachePosMixin",
-    "ParticleFrustumBlacklistMixin",
     "ParticleManagerAsyncMixin",
     "ParticleManagerCachedLightMixin",
-    "ParticleRendererCountMixin",
     "ParticleManagerRenderDistanceMixin",
+    "ParticleManagerTypeMixin",
     "ParticleMoveAdjustMixin",
+    "ParticleRendererBrightnessTickMixin",
     "ParticleRendererCachedPosMixin",
-    "ClientWorldDecreaseMixin",
-    "ParticleManagerTypeMixin"
+    "ParticleRendererCountMixin",
+    "ParticleRendererRenderDistanceMixin"
   ],
   "server": [
   ],
@@ -24,6 +25,7 @@
     "defaultRequire": 1
   },
   "mixins": [
+    "ParticleAccessor",
     "ParticleRendererAccessor"
   ]
 }

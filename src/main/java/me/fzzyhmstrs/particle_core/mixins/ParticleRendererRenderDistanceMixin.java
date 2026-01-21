@@ -3,7 +3,6 @@ package me.fzzyhmstrs.particle_core.mixins;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import me.fzzyhmstrs.particle_core.PcConfig;
 import me.fzzyhmstrs.particle_core.interfaces.FrustumBlacklisted;
-import me.fzzyhmstrs.particle_core.interfaces.FrustumProvider;
 import net.minecraft.client.particle.BillboardParticle;
 import net.minecraft.client.particle.BillboardParticleRenderer;
 import net.minecraft.client.particle.BillboardParticleSubmittable;
