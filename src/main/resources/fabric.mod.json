@@ -31,7 +31,7 @@
   "depends": {
     "fabricloader": ">=${loaderVersion}",
     "fabric-language-kotlin": ">=${fabricKotlinVersion}",
-    "minecraft": ">=1.21.4",
+    "minecraft": "=1.21.4",
     "java": ">=21",
     "fzzy_config": ">=${fzzyConfigVersion}"
   },
