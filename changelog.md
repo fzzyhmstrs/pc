@@ -1,4 +1,4 @@
-# Particle Core 0.3.1
+# Particle Core 0.3.1-fix1 (Neoforge)
 
 ### Additions
 * None.
@@ -7,5 +7,4 @@
 * None.
 
 ### Fixes
-* Fix async ticking instability causing certain particles to grow to monstrous proportions
-* Fix crashes related to LegacyRandomSource access across-thread
+* Fix accessor for particle position
