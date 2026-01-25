@@ -4,12 +4,12 @@
   "compatibilityLevel": "JAVA_21",
   "plugin": "me.fzzyhmstrs.particle_core.plugin.PcMixinPlugin",
   "mixins": [
-    "ParticleAccessor"
   ],
   "client": [
     "BillboardParticleMixin",
     "BillboardParticleVertexMixin",
     "BufferBuilderVertexMixin",
+    "FireworksSparkParticleMixin",
     "LivingEntityMixin",
     "ParticleAccessor",
     "ParticleBrightnessCacheMixin",
@@ -17,6 +17,7 @@
     "ParticleManagerAsyncMixin",
     "ParticleManagerCachedLightMixin",
     "ParticleManagerCachedPosMixin",
+    "ParticleManagerCreatorMixin",
     "ParticleManagerCountMixin",
     "ParticleManagerRenderDistanceMixin",
     "ParticleManagerRotationMixin",
