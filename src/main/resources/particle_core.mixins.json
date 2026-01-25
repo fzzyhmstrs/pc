@@ -3,17 +3,22 @@
   "package": "me.fzzyhmstrs.particle_core.mixins",
   "compatibilityLevel": "JAVA_21",
   "plugin": "me.fzzyhmstrs.particle_core.plugin.PcMixinPlugin",
+  "mixins": [
+  ],
   "client": [
     "ClientWorldDecreaseMixin",
+    "FireworksSparkParticleMixin",
     "LivingEntityMixin",
     "ParticleAccessor",
     "ParticleBrightnessCacheMixin",
     "ParticleCachePosMixin",
     "ParticleManagerAsyncMixin",
     "ParticleManagerCachedLightMixin",
+    "ParticleManagerCreatorMixin",
     "ParticleManagerRenderDistanceMixin",
     "ParticleManagerTypeMixin",
     "ParticleMoveAdjustMixin",
+    "ParticleRendererAccessor",
     "ParticleRendererBrightnessTickMixin",
     "ParticleRendererCachedPosMixin",
     "ParticleRendererCountMixin",
@@ -23,9 +28,5 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  },
-  "mixins": [
-    "ParticleAccessor",
-    "ParticleRendererAccessor"
-  ]
+  }
 }
