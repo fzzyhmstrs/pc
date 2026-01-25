@@ -1,4 +1,4 @@
-# Particle Core 0.3.1-fix1 (Neoforge)
+# Particle Core 0.3.2
 
 ### Additions
 * None.
@@ -7,4 +7,4 @@
 * None.
 
 ### Fixes
-* Fix accessor for particle position
+* Fix crash with FireworkSparkParticle not handling the nullability of `addParticle`
