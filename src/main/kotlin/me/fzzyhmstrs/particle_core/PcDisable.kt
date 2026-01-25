@@ -45,7 +45,7 @@ object PcDisable {
     class DisabledOptimizations {
         var _Disable_Optimizations_Options = mapOf(
             "ROTATION" to "[Impact: Medium] Disables mixins related to vertex rotation caching (ParticleManagerRotationMixin, BillboardParticleMixin)",
-            "TYPE" to "[Impact: Low to Medium] Disables mixins related to particle disabling and reduction (WorldRendererTypeMixin)",
+            "TYPE" to "[Impact: Low to Medium] Disables mixins related to particle disabling and reduction (WorldRendererTypeMixin, ParticleManagerCreatorMixin, FireworksSparkParticleMixin)",
             "DECREASE" to "[Impact: Low] Disables mixins related particle settings reduction (ALL, DECREASED, MINIMAL) (WorldRendererDecreaseMixin)",
             "LIGHTMAP" to "[Impact: Medium] Disables mixins related to light map caching (ParticleManagerCachedLightMixin, ParticleBrightnessCacheMixin, ParticleCachePosMixin, ParticleManagerCachedPosMixin)",
             "POTION" to "[Impact: Low] Disables mixins related to potion particle disabling (LivingEntityMixin)",
@@ -67,7 +67,9 @@ object PcDisable {
                 }
             }
             if(disableOptimizations.contains("TYPE")) {
-                if (className.endsWith("WorldRendererTypeMixin"))
+                if (className.endsWith("WorldRendererTypeMixin")
+                    || className.endsWith("ParticleManagerCreatorMixin")
+                    || className.endsWith("FireworksSparkParticleMixin"))
                 {
                     println("Disabling [$className] due to 'TYPE' key in particle core config!")
                     return true
