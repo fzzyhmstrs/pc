@@ -9,7 +9,6 @@
     "BillboardParticleMixin",
     "BillboardParticleVertexMixin",
     "BufferBuilderVertexMixin",
-    "ClientWorldDecreaseMixin",
     "FireworksSparkParticleMixin",
     "FrustumAccessor",
     "LivingEntityMixin",
