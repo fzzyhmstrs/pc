@@ -1,4 +1,4 @@
-# Particle Core 0.3.1
+# Particle Core 0.3.2
 
 ### Additions
 * None.
@@ -7,5 +7,4 @@
 * None.
 
 ### Fixes
-* Fix async ticking instability causing certain particles to grow to monstrous proportions
-* Fix crashes related to LegacyRandomSource access across-thread
+* Fix crash with FireworkSparkParticle not handling the nullability of `addParticle`
