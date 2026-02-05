@@ -12,6 +12,7 @@ import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.BillboardParticle;
+import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.VertexConsumer;
 import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,7 +30,8 @@ abstract class BillboardParticleVertexMixin {
 
     @WrapOperation(method = "method_60375", at = @At(value = "INVOKE", target = "net/minecraft/client/render/VertexConsumer.vertex(FFF)Lnet/minecraft/client/render/VertexConsumer;"))
     private VertexConsumer particle_core_gatherVertexVertexes(VertexConsumer instance, float x, float y, float z, Operation<VertexConsumer> original, @Share("vertex_container") LocalRef<VertexContainer> ref) {
-        VertexContainer c = new VertexContainer();
+		if (!(instance instanceof ParticleVertexer)) return original.call(instance, x, y, z);
+		VertexContainer c = new VertexContainer();
         c.x = x;
         c.y = y;
         c.z = z;
@@ -39,6 +41,7 @@ abstract class BillboardParticleVertexMixin {
 
     @WrapOperation(method = "method_60375", at = @At(value = "INVOKE", target = "net/minecraft/client/render/VertexConsumer.texture (FF)Lnet/minecraft/client/render/VertexConsumer;"))
     private VertexConsumer particle_core_gatherVertexTextures(VertexConsumer instance, float u, float v, Operation<VertexConsumer> original, @Share("vertex_container") LocalRef<VertexContainer> ref) {
+        if (!(instance instanceof ParticleVertexer)) return original.call(instance, u, v);
         VertexContainer c = ref.get();
         c.u = u;
         c.v = v;
@@ -47,6 +50,7 @@ abstract class BillboardParticleVertexMixin {
 
     @WrapOperation(method = "method_60375", at = @At(value = "INVOKE", target = "net/minecraft/client/render/VertexConsumer.color (FFFF)Lnet/minecraft/client/render/VertexConsumer;"))
     private VertexConsumer particle_core_gatherVertexColors(VertexConsumer instance, float red, float green, float blue, float alpha, Operation<VertexConsumer> original, @Share("vertex_container") LocalRef<VertexContainer> ref) {
+        if (!(instance instanceof ParticleVertexer)) return original.call(instance, red, green, blue, alpha);
         VertexContainer c = ref.get();
         c.red = red;
         c.green = green;
@@ -57,6 +61,7 @@ abstract class BillboardParticleVertexMixin {
 
     @WrapOperation(method = "method_60375", at = @At(value = "INVOKE", target = "net/minecraft/client/render/VertexConsumer.light (I)Lnet/minecraft/client/render/VertexConsumer;"))
     private VertexConsumer particle_core_gatherVertexLight(VertexConsumer instance, int i, Operation<VertexConsumer> original, @Share("vertex_container") LocalRef<VertexContainer> ref) {
+        if (!(instance instanceof ParticleVertexer)) return original.call(instance, i);
         VertexContainer c = ref.get();
         ((ParticleVertexer) instance).particle_core_particleVertex(c.x, c.y, c.z, c.red, c.green, c.blue, c.alpha, c.u, c.v, i);
         return instance;
