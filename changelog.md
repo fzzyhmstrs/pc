@@ -1,4 +1,4 @@
-# Particle Core 0.3.2
+# Particle Core 0.3.3
 
 ### Additions
 * None.
@@ -7,4 +7,4 @@
 * None.
 
 ### Fixes
-* Fix crash with FireworkSparkParticle not handling the nullability of `addParticle`
+* Fix crashes with particles that use a custom `VertexConsumer` that isn't a `BufferBuilder`
