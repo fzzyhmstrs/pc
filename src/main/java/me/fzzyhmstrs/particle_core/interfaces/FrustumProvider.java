@@ -1,6 +1,6 @@
 package me.fzzyhmstrs.particle_core.interfaces;
 
-import net.minecraft.client.render.Frustum;
+import net.minecraft.client.renderer.culling.Frustum;
 
 public interface FrustumProvider {
 

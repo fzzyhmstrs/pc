@@ -1,7 +1,7 @@
 package me.fzzyhmstrs.particle_core
 
-import net.minecraft.util.math.random.Random
+import net.minecraft.util.RandomSource
 
 object PcUtils {
-    internal val random = Random.createLocal()
+    internal val random = RandomSource.createThreadLocalInstance()
 }

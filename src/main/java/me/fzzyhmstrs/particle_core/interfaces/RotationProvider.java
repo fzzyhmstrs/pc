@@ -1,6 +1,6 @@
 package me.fzzyhmstrs.particle_core.interfaces;
 
-import net.minecraft.client.render.Camera;
+import net.minecraft.client.Camera;
 import org.joml.Vector3f;
 
 public interface RotationProvider {

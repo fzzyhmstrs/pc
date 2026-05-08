@@ -7,12 +7,12 @@ import me.fzzyhmstrs.particle_core.PcConfig;
 import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.network.OtherClientPlayerEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.particle.ParticleEffect;
-import net.minecraft.world.World;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.player.RemotePlayer;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -25,17 +25,17 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
 
-    @WrapWithCondition(method = "tickStatusEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addParticleClient(Lnet/minecraft/particle/ParticleEffect;DDDDDD)V"))
-    private boolean particle_core_turnOffPotionParticles(World instance, ParticleEffect parameters, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
+    @WrapWithCondition(method = "tickEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;addParticle(Lnet/minecraft/core/particles/ParticleOptions;DDDDDD)V"))
+    private boolean particle_core_turnOffPotionParticles(Level instance, ParticleOptions parameters, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
         if (PcConfig.INSTANCE.shouldDisablePotionParticle(PcConfig.PotionDisableType.NONE)) return true;
         if (PcConfig.INSTANCE.shouldDisablePotionParticle(PcConfig.PotionDisableType.ALL)) return false;
-        if ((Object)this instanceof OtherClientPlayerEntity) {
+        if ((Object)this instanceof RemotePlayer) {
             return !PcConfig.INSTANCE.shouldDisablePotionParticle(PcConfig.PotionDisableType.OTHER_PLAYER);
         }
-        if ((Object)this instanceof ClientPlayerEntity) {
+        if ((Object)this instanceof LocalPlayer) {
             return !PcConfig.INSTANCE.shouldDisablePotionParticle(PcConfig.PotionDisableType.SELF);
         }
-        if ((Object)this instanceof MobEntity) {
+        if ((Object)this instanceof Mob) {
             return !PcConfig.INSTANCE.shouldDisablePotionParticle(PcConfig.PotionDisableType.MOBS);
         }
         return true;

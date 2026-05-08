@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("fabric-loom")
+    id("net.fabricmc.fabric-loom")
     val kotlinVersion: String by System.getProperties()
     kotlin("jvm").version(kotlinVersion)
     id("com.modrinth.minotaur") version "2.+"
@@ -44,6 +44,10 @@ repositories {
         name = "FzzyMaven"
         url = uri("https://maven.fzzyhmstrs.me/")
     }
+    maven {
+        name = "Terraformers"
+        url = uri("https://maven.terraformersmc.com/releases/")
+    }
     mavenLocal()
     mavenCentral()
 }
@@ -52,30 +56,29 @@ dependencies {
     implementation("com.google.guava:guava:$guavaVersion")
     val minecraftVersion: String by project
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    val yarnMappings: String by project
-    mappings("net.fabricmc:yarn:$yarnMappings:v2")
     val loaderVersion: String by project
-    modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
+    implementation("net.fabricmc:fabric-loader:$loaderVersion")
     val fabricVersion: String by project
-    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
+    implementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
     val fabricKotlinVersion: String by project
-    modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
+    implementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
 
     val fzzyConfigVersion: String by project
-    modImplementation("me.fzzyhmstrs:fzzy_config:$fzzyConfigVersion+$minecraftVersion"){
+    val fzzyConfigMinecraftVersion: String by project
+    implementation("me.fzzyhmstrs:fzzy_config:$fzzyConfigVersion+$fzzyConfigMinecraftVersion"){
         exclude("net.fabricmc.fabric-api")
     }
 
     val cmVersion: String by project
-    implementation("me.fallenbreath:conditional-mixin:$cmVersion")
-    include("me.fallenbreath:conditional-mixin:$cmVersion")
+    implementation("me.fallenbreath:conditional-mixin-fabric:$cmVersion")
+    include("me.fallenbreath:conditional-mixin-fabric:$cmVersion")
 
     runtimeOnly("net.peanuuutz.tomlkt:tomlkt:0.3.7")
     runtimeOnly("blue.endless:jankson:1.2.3")
 }
 
 tasks {
-    val javaVersion = JavaVersion.VERSION_21
+    val javaVersion = JavaVersion.VERSION_25
     withType<JavaCompile> {
         options.encoding = "UTF-8"
         sourceCompatibility = javaVersion.toString()
@@ -99,18 +102,21 @@ tasks {
         val loaderVersion: String by project
         val fabricKotlinVersion: String by project
         val fzzyConfigVersion: String by project
+        val minecraftVersion: String by project
         inputs.property("version", project.version)
         inputs.property("id", base.archivesName.get())
         inputs.property("loaderVersion", loaderVersion)
         inputs.property("fabricKotlinVersion", fabricKotlinVersion)
         inputs.property("fzzyConfigVersion", fzzyConfigVersion)
+        inputs.property("minecraftVersion", minecraftVersion)
         filesMatching("fabric.mod.json") {
             expand(mutableMapOf(
                 "version" to project.version,
                 "id" to base.archivesName.get(),
                 "loaderVersion" to loaderVersion,
                 "fabricKotlinVersion" to fabricKotlinVersion,
-                "fzzyConfigVersion" to fzzyConfigVersion)
+                "fzzyConfigVersion" to fzzyConfigVersion,
+                "minecraftVersion" to minecraftVersion)
             )
         }
     }
@@ -137,7 +143,7 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
         versionNumber.set("$modVersion+$minecraftVersion")
         versionName.set("${base.archivesName.get()}-$modVersion+$minecraftVersion")
         versionType.set(releaseType)
-        uploadFile.set(tasks.remapJar.get())
+        uploadFile.set(tasks.jar.get())
         gameVersions.addAll(mcVersions.split(","))
         loaders.addAll("fabric", "quilt")
         detectLoaders.set(false)
@@ -168,7 +174,7 @@ if (System.getenv("CURSEFORGE_TOKEN") != null) {
             }
             addGameVersion("Fabric")
             addGameVersion("Quilt")
-            mainArtifact(tasks.remapJar.get().archiveFile.get(), closureOf<CurseArtifact> {
+            mainArtifact(tasks.jar.get().archiveFile.get(), closureOf<CurseArtifact> {
                 displayName = "${base.archivesName.get()}-$modVersion+$minecraftVersion"
                 relations(closureOf<CurseRelation>{
                     this.requiredDependency("fabric-api")

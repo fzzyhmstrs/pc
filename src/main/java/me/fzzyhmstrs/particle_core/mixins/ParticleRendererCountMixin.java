@@ -9,8 +9,8 @@ import me.fzzyhmstrs.particle_core.PcConfig;
 import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.particle.ParticleRenderer;
-import net.minecraft.client.particle.ParticleTextureSheet;
+import net.minecraft.client.particle.ParticleGroup;
+import net.minecraft.client.particle.ParticleRenderType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 				@Condition(type = Condition.Type.TESTER, tester = PcConditionTester.class)
 		}
 )
-@Mixin(value = ParticleRenderer.class, priority = 100000)
+@Mixin(value = ParticleGroup.class, priority = 100000)
 public class ParticleRendererCountMixin {
 
 	@ModifyConstant(method = "<init>", constant = @Constant(intValue = 16384))

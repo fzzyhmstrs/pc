@@ -11,12 +11,12 @@ import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.particle.ParticleRenderer;
-import net.minecraft.client.particle.ParticleTextureSheet;
-import net.minecraft.particle.ParticleGroup;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.profiler.Profilers;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.particle.ParticleGroup;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.core.particles.ParticleLimit;
+import net.minecraft.ReportedException;
+import net.minecraft.util.profiling.Profiler;
 import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -45,7 +45,7 @@ import java.util.function.Consumer;
 				@Condition(type = Condition.Type.TESTER, tester = PcConditionTester.class)
 		}
 )
-@Mixin(value = ParticleManager.class, priority = 100000)
+@Mixin(value = ParticleEngine.class, priority = 100000)
 @Debug(export = true)
 public abstract class ParticleManagerAsyncMixin {
 
@@ -55,16 +55,16 @@ public abstract class ParticleManagerAsyncMixin {
 	@Unique
 	private static final Set<Class<?>> unsafeParticles = ConcurrentHashMap.newKeySet();
 
-	@Shadow @Final private Map<ParticleTextureSheet, ParticleRenderer<? extends Particle>> particles;
+	@Shadow @Final private Map<ParticleRenderType, ParticleGroup<?>> particles;
 
-	@Shadow protected abstract void addTo(ParticleGroup group, int count);
+	@Shadow protected abstract void updateCount(ParticleLimit group, int count);
 
-	@WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "com/google/common/collect/Maps.newIdentityHashMap ()Ljava/util/IdentityHashMap;"))
+	@WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Maps;newIdentityHashMap()Ljava/util/IdentityHashMap;"))
 	private IdentityHashMap<?, ?> particle_core_setupSynchronizedParticleMap(Operation<IdentityHashMap<?, ?>> original) {
 		return new SynchronizedIdentityHashMap<>(original.call());
 	}
 
-	@WrapOperation(method = "addParticle(Lnet/minecraft/client/particle/Particle;)V", at = @At(value = "INVOKE", target = "java/util/Queue.add (Ljava/lang/Object;)Z"))
+	@WrapOperation(method = "add", at = @At(value = "INVOKE", target = "Ljava/util/Queue;add(Ljava/lang/Object;)Z"))
 	private boolean particle_core_synchronizeParticleAdds(Queue<? extends Particle> instance, Object e, Operation<Boolean> original) {
 		synchronized (lock) {
 			return original.call(instance, e);
@@ -72,8 +72,8 @@ public abstract class ParticleManagerAsyncMixin {
 	}
 
 	@SuppressWarnings({"SynchronizeOnNonFinalField"})
-	@WrapOperation(method = "tick", at = @At(value = "INVOKE", target = "java/util/Map.forEach (Ljava/util/function/BiConsumer;)V"))
-	private void particle_core_asyncParticleTicking(Map<ParticleTextureSheet, Queue<Particle>> instance, BiConsumer<? super ParticleTextureSheet, ? extends Queue<Particle>> v, Operation<Void> original) {
+	@WrapOperation(method = "tick", at = @At(value = "INVOKE", target = "Ljava/util/Map;forEach(Ljava/util/function/BiConsumer;)V"))
+	private void particle_core_asyncParticleTicking(Map<ParticleRenderType, ParticleGroup<?>> instance, BiConsumer<? super ParticleRenderType, ? super ParticleGroup<?>> v, Operation<Void> original) {
 		if (!PcConfig.INSTANCE.getImpl().getAsynchronousTicking().get()) {
 			original.call(instance, v);
 		} else {
@@ -82,8 +82,8 @@ public abstract class ParticleManagerAsyncMixin {
 				synchronized (this.particles) {
 					List<CompletableFuture<TickResult.Results>> futures = new ArrayList<>(entries.size());
 					float threshold = PcConfig.INSTANCE.getImpl().getMaxParticlesPerSheet().get() * 0.35f;
-					for (Map.Entry<ParticleTextureSheet, ParticleRenderer<? extends Particle>> entry : entries) {
-						Profilers.get().push(entry.getKey().toString());
+					for (Map.Entry<ParticleRenderType, ParticleGroup<?>> entry : entries) {
+						Profiler.get().push(entry.getKey().name());
 						if (entry.getValue().isEmpty()) {
 							continue;
 						}
@@ -92,17 +92,17 @@ public abstract class ParticleManagerAsyncMixin {
 						}
 					}
 					//this is a second loop so that all the async futures can be pushed to their queue above without getting blocked by sync particle ticking
-					for (Map.Entry<ParticleTextureSheet, ParticleRenderer<?>> entry : entries) {
+					for (Map.Entry<ParticleRenderType, ParticleGroup<?>> entry : entries) {
 						if (entry.getValue().isEmpty() || threshold >= entry.getValue().size()) {
 							syncTickParticles(entry.getValue());
-							Profilers.get().pop();
+							Profiler.get().pop();
 						}
 					}
 
 					CompletableFuture.allOf(futures.toArray(new CompletableFuture[]{})).join();
 					for (CompletableFuture<TickResult.Results> future : futures) {
 						finalizeParticles(future.join());
-						Profilers.get().pop();
+						Profiler.get().pop();
 					}
 				}
 			} catch (Exception e) {
@@ -113,15 +113,15 @@ public abstract class ParticleManagerAsyncMixin {
 	}
 
 	@Unique
-	private void syncTickParticles(ParticleRenderer<?> particles) {
-		particles.tick();
+	private void syncTickParticles(ParticleGroup<?> particles) {
+		particles.tickParticles();
 	}
 
 	@Unique
-	private TickResult.Results asyncTickParticles(ParticleRenderer<? extends Particle> particleCollection) {
+	private TickResult.Results asyncTickParticles(ParticleGroup<? extends Particle> particleCollection) {
 		Consumer<Particle> tick = ((ParticleRendererAccessor)particleCollection)::callTickParticle;
 
-		List<TickResult> results = particleCollection.getParticles().parallelStream().map((p) -> tickParticleSafe(tick, p)).toList();
+		List<TickResult> results = particleCollection.getAll().parallelStream().map((p) -> tickParticleSafe(tick, p)).toList();
 		return new TickResult.Results(results, particleCollection);
 	}
 
@@ -132,7 +132,7 @@ public abstract class ParticleManagerAsyncMixin {
 				return new TickResult(true, particle);
 			}
 			tick.accept(particle);
-		} catch (CrashException e) {
+		} catch (ReportedException e) {
 			if (e.getCause() != null) {
 				String msg = e.getCause().getMessage();
 				if (msg != null && (Objects.equals(msg, "Accessing LegacyRandomSource from multiple threads") || msg.contains("ThreadLocalRandom accessed from a different thread"))) {
@@ -168,15 +168,15 @@ public abstract class ParticleManagerAsyncMixin {
 				((ParticleRendererAccessor)result.originalCollection()).callTickParticle(tr.particle());
 			}
 		}
-		if (i > (result.originalCollection().getParticles().size() * 2 / 3)) {
+		if (i > (result.originalCollection().getAll().size() * 2 / 3)) {
 			PcConfig.INSTANCE.getLogger().error("Asynchronous particle ticking encountered issues with over 2/3 of particles; disabling");
 			PcConfig.INSTANCE.getImpl().getAsynchronousTicking().validateAndSet(false);
 		}
-		Iterator<? extends Particle> iterator = result.originalCollection().getParticles().iterator();
+		Iterator<? extends Particle> iterator = result.originalCollection().getAll().iterator();
 		while (iterator.hasNext()) {
 			Particle particle = iterator.next();
 			if (particle.isAlive()) continue;
-			particle.getGroup().ifPresent(group -> this.addTo(group, -1));
+			particle.getParticleLimit().ifPresent(group -> this.updateCount(group, -1));
 			iterator.remove();
 		}
 	}

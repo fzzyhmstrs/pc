@@ -1,80 +1,80 @@
 package me.fzzyhmstrs.particle_core;
 
 import com.google.common.collect.AbstractIterator;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.CuboidBlockIterator;
-import net.minecraft.util.function.BooleanBiFunction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.ChunkSectionPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.CollisionView;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.core.Cursor3D;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.core.SectionPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.CollisionGetter;
 import org.jetbrains.annotations.Nullable;
 
 public class CustomBlockCollisionSpliterator extends AbstractIterator<VoxelShape> {
-	private final Box box;
-	private final ShapeContext context;
-	private final CuboidBlockIterator blockIterator;
-	private final BlockPos.Mutable pos;
+	private final AABB box;
+	private final CollisionContext context;
+	private final Cursor3D blockIterator;
+	private final BlockPos.MutableBlockPos pos;
 	private final VoxelShape boxShape;
-	private final CollisionView world;
+	private final CollisionGetter world;
 	@Nullable
-	private BlockView chunk;
+	private BlockGetter chunk;
 	private long chunkPos;
 
-	public CustomBlockCollisionSpliterator(CollisionView world, @Nullable Entity entity, Box box, boolean checkX, boolean checkY, boolean checkZ) {
-		this.context = entity == null ? ShapeContext.absent() : ShapeContext.of(entity);
-		this.pos = new BlockPos.Mutable();
-		this.boxShape = VoxelShapes.cuboid(box);
+	public CustomBlockCollisionSpliterator(CollisionGetter world, @Nullable Entity entity, AABB box, boolean checkX, boolean checkY, boolean checkZ) {
+		this.context = entity == null ? CollisionContext.empty() : CollisionContext.of(entity);
+		this.pos = new BlockPos.MutableBlockPos();
+		this.boxShape = Shapes.create(box);
 		this.world = world;
 		this.box = box;
-		int i = MathHelper.floor(box.minX - 1.0E-7) - (checkX ? 1 : 0);
-		int j = MathHelper.floor(box.maxX + 1.0E-7) + (checkX ? 1 : 0);
-		int k = MathHelper.floor(box.minY - 1.0E-7) - (checkY ? 1 : 0);
-		int l = MathHelper.floor(box.maxY + 1.0E-7) + (checkY ? 1 : 0);
-		int m = MathHelper.floor(box.minZ - 1.0E-7) - (checkZ ? 1 : 0);
-		int n = MathHelper.floor(box.maxZ + 1.0E-7) + (checkZ ? 1 : 0);
-		this.blockIterator = new CuboidBlockIterator(i, k, m, j, l, n);
+		int i = Mth.floor(box.minX - 1.0E-7) - (checkX ? 1 : 0);
+		int j = Mth.floor(box.maxX + 1.0E-7) + (checkX ? 1 : 0);
+		int k = Mth.floor(box.minY - 1.0E-7) - (checkY ? 1 : 0);
+		int l = Mth.floor(box.maxY + 1.0E-7) + (checkY ? 1 : 0);
+		int m = Mth.floor(box.minZ - 1.0E-7) - (checkZ ? 1 : 0);
+		int n = Mth.floor(box.maxZ + 1.0E-7) + (checkZ ? 1 : 0);
+		this.blockIterator = new Cursor3D(i, k, m, j, l, n);
 	}
 
 	@Nullable
-	private BlockView getChunk(int x, int z) {
-		BlockView blockView;
-		int i = ChunkSectionPos.getSectionCoord(x);
-		int j = ChunkSectionPos.getSectionCoord(z);
-		long l = ChunkPos.toLong(i, j);
+	private BlockGetter getChunk(int x, int z) {
+		BlockGetter blockView;
+		int i = SectionPos.blockToSectionCoord(x);
+		int j = SectionPos.blockToSectionCoord(z);
+		long l = ChunkPos.pack(i, j);
 		if (this.chunk != null && this.chunkPos == l) {
 			return this.chunk;
 		}
-		this.chunk = blockView = this.world.getChunkAsView(i, j);
+		this.chunk = blockView = this.world.getChunkForCollisions(i, j);
 		this.chunkPos = l;
 		return blockView;
 	}
 
 	@Override
 	protected VoxelShape computeNext() {
-		while (this.blockIterator.step()) {
-			BlockView blockView;
-			int i = this.blockIterator.getX();
-			int j = this.blockIterator.getY();
-			int k = this.blockIterator.getZ();
-			int l = this.blockIterator.getEdgeCoordinatesCount();
+		while (this.blockIterator.advance()) {
+			BlockGetter blockView;
+			int i = this.blockIterator.nextX();
+			int j = this.blockIterator.nextY();
+			int k = this.blockIterator.nextZ();
+			int l = this.blockIterator.getNextType();
 			if (l == 3 || (blockView = this.getChunk(i, k)) == null) continue;
 			this.pos.set(i, j, k);
 			BlockState blockState = blockView.getBlockState(this.pos);
 			VoxelShape voxelShape = blockState.getCollisionShape(this.world, this.pos, this.context);
-			if (voxelShape == VoxelShapes.fullCube()) {
+			if (voxelShape == Shapes.block()) {
 				if (!this.box.intersects(i, j, k, (double)i + 1.0, (double)j + 1.0, (double)k + 1.0)) continue;
-				return voxelShape.offset(i, j, k);
+				return voxelShape.move(i, j, k);
 			}
-			VoxelShape voxelShape2 = voxelShape.offset(i, j, k);
-			if (voxelShape2.isEmpty() || !VoxelShapes.matchesAnywhere(voxelShape2, this.boxShape, BooleanBiFunction.AND)) continue;
+			VoxelShape voxelShape2 = voxelShape.move(i, j, k);
+			if (voxelShape2.isEmpty() || !Shapes.joinIsNotEmpty(voxelShape2, this.boxShape, BooleanOp.AND)) continue;
 			return voxelShape2;
 		}
 		return this.endOfData();

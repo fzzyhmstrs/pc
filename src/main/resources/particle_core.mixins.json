@@ -25,9 +25,7 @@
     "ParticleRendererBrightnessTickMixin",
     "ParticleRendererCachedPosMixin",
     "ParticleRendererCountMixin",
-    "ParticleRendererFrustumMixin",
-    "ParticleRendererRenderDistanceMixin",
-    "WorldRendererFrustumMixin"
+    "ParticleRendererFrustumMixin"
   ],
   "server": [
   ],

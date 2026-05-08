@@ -11,8 +11,8 @@ import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.core.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
                 @Condition(type = Condition.Type.TESTER, tester = PcConditionTester.class)
         }
 )
-@Mixin(ParticleManager.class)
+@Mixin(ParticleEngine.class)
 public class ParticleManagerCachedLightMixin implements CachedLightProvider {
 
     @Unique
