@@ -9,8 +9,8 @@ import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.particle.Particle
-import net.minecraft.client.render.Frustum
-import net.minecraft.util.math.Vec3d
+import net.minecraft.client.renderer.culling.Frustum
+import net.minecraft.world.phys.Vec3
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.function.Predicate
@@ -28,8 +28,8 @@ object PcConfig: ClientModInitializer {
 
     var impl: PcConfigImpl = ConfigApi.registerAndLoadConfig({ PcConfigImpl() }, RegisterType.CLIENT)
 
-    fun shouldRenderParticle(x: Double, y: Double, z: Double, pos: Vec3d): Boolean {
-        return pos.squaredDistanceTo(x, y, z) <= renderDistance
+    fun shouldRenderParticle(x: Double, y: Double, z: Double, pos: Vec3): Boolean {
+        return pos.distanceToSqr(x, y, z) <= renderDistance
     }
 
     fun shouldDisablePotionParticle(type: PotionDisableType): Boolean {
@@ -69,10 +69,10 @@ object PcConfig: ClientModInitializer {
         },
         AGGRESSIVE {
             override fun shouldKeep(frustum: Frustum, particle: Particle): Boolean {
-                return (frustum as FrustumAccessor).frustumIntersection.testPoint(
-                    ((particle as ParticleAccessor).x - frustum.getX()).toFloat(),
-                    ((particle as ParticleAccessor).y - frustum.getY()).toFloat(),
-                    ((particle as ParticleAccessor).z - frustum.getZ()).toFloat()
+                return (frustum as FrustumAccessor).intersection.testPoint(
+                    ((particle as ParticleAccessor).x - frustum.camX).toFloat(),
+                    ((particle as ParticleAccessor).y - frustum.camY).toFloat(),
+                    ((particle as ParticleAccessor).z - frustum.camZ).toFloat()
                 )
             }
         },

@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("fabric-loom")
+    id("net.fabricmc.fabric-loom")
     val kotlinVersion: String by System.getProperties()
     kotlin("jvm").version(kotlinVersion)
     id("com.modrinth.minotaur") version "2.+"
@@ -24,6 +24,7 @@ val mavenGroup: String by project
 group = mavenGroup
 println("## Changelog for ${base.archivesName.get()} $modVersion \n\n" + log.readText())
 println(base.archivesName.get().replace('_','-'))
+
 repositories {
     maven {
         name = "FallenBreath"
@@ -47,23 +48,23 @@ repositories {
     mavenLocal()
     mavenCentral()
 }
+
 dependencies {
     val guavaVersion: String by project
     implementation("com.google.guava:guava:$guavaVersion")
     val minecraftVersion: String by project
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    val yarnMappings: String by project
-    mappings("net.fabricmc:yarn:$yarnMappings:v2")
     val loaderVersion: String by project
-    modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
+    implementation("net.fabricmc:fabric-loader:$loaderVersion")
     val fabricVersion: String by project
-    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
+    implementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
     val fabricKotlinVersion: String by project
-    modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
+    implementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
 
     val fzzyConfigVersion: String by project
-    modImplementation("me.fzzyhmstrs:fzzy_config:$fzzyConfigVersion+$minecraftVersion"){
+    implementation("me.fzzyhmstrs:fzzy_config:$fzzyConfigVersion+$minecraftVersion"){
         exclude("net.fabricmc.fabric-api")
+        exclude("com.terraformersmc")
     }
 
     val cmVersion: String by project
@@ -75,7 +76,7 @@ dependencies {
 }
 
 tasks {
-    val javaVersion = JavaVersion.VERSION_21
+    val javaVersion = JavaVersion.VERSION_25
     withType<JavaCompile> {
         options.encoding = "UTF-8"
         sourceCompatibility = javaVersion.toString()
@@ -137,7 +138,7 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
         versionNumber.set("$modVersion+$minecraftVersion")
         versionName.set("${base.archivesName.get()}-$modVersion+$minecraftVersion")
         versionType.set(releaseType)
-        uploadFile.set(tasks.remapJar.get())
+        uploadFile.set(tasks.jar.get())
         gameVersions.addAll(mcVersions.split(","))
         loaders.addAll("fabric", "quilt")
         detectLoaders.set(false)
@@ -168,7 +169,7 @@ if (System.getenv("CURSEFORGE_TOKEN") != null) {
             }
             addGameVersion("Fabric")
             addGameVersion("Quilt")
-            mainArtifact(tasks.remapJar.get().archiveFile.get(), closureOf<CurseArtifact> {
+            mainArtifact(tasks.jar.get().archiveFile.get(), closureOf<CurseArtifact> {
                 displayName = "${base.archivesName.get()}-$modVersion+$minecraftVersion"
                 relations(closureOf<CurseRelation>{
                     this.requiredDependency("fabric-api")

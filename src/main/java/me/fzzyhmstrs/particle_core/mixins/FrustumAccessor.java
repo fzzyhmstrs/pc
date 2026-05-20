@@ -5,7 +5,7 @@ import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.render.Frustum;
+import net.minecraft.client.renderer.culling.Frustum;
 import org.joml.FrustumIntersection;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -19,14 +19,14 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(Frustum.class)
 public interface FrustumAccessor {
     @Accessor
-    FrustumIntersection getFrustumIntersection();
+    FrustumIntersection getIntersection();
 
-    @Accessor("x")
-    double getX();
+    @Accessor("camX")
+    double getCamX();
 
-    @Accessor("y")
-    double getY();
+    @Accessor("camY")
+    double getCamY();
 
-    @Accessor("z")
-    double getZ();
+    @Accessor("camZ")
+    double getCamZ();
 }
