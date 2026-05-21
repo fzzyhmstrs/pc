@@ -1,20 +1,20 @@
 package me.fzzyhmstrs.particle_core;
 
 import com.google.common.collect.AbstractIterator;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.core.Cursor3D;
-import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.level.ChunkPos;
+import net.minecraft.core.Cursor3D;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.CollisionGetter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class CustomBlockCollisionSpliterator extends AbstractIterator<VoxelShape> {
@@ -48,7 +48,7 @@ public class CustomBlockCollisionSpliterator extends AbstractIterator<VoxelShape
 		BlockGetter blockView;
 		int i = SectionPos.blockToSectionCoord(x);
 		int j = SectionPos.blockToSectionCoord(z);
-		long l = ChunkPos.asLong(i, j);
+		long l = ChunkPos.pack(i, j);
 		if (this.chunk != null && this.chunkPos == l) {
 			return this.chunk;
 		}

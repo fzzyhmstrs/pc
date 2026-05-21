@@ -1,21 +1,15 @@
 package me.fzzyhmstrs.particle_core.mixins;
 
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import me.fallenbreath.conditionalmixin.api.annotation.Condition;
 import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import me.fzzyhmstrs.particle_core.PcConfig;
 import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.Camera;
+import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.state.ParticlesRenderState;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.state.level.ParticlesRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

@@ -3,8 +3,6 @@ package me.fzzyhmstrs.particle_core
 import me.fzzyhmstrs.fzzy_config.api.ConfigApi
 import me.fzzyhmstrs.fzzy_config.api.RegisterType
 import me.fzzyhmstrs.fzzy_config.util.EnumTranslatable
-import me.fzzyhmstrs.particle_core.mixins.FrustumAccessor
-import me.fzzyhmstrs.particle_core.mixins.ParticleAccessor
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
@@ -63,24 +61,33 @@ object PcConfig: ClientModInitializer {
 
     enum class CullingBehavior: EnumTranslatable {
         NO_CULLING {
+            override fun pass(): Boolean {
+                return false
+            }
             override fun shouldKeep(frustum: Frustum, particle: Particle): Boolean {
                 return false
             }
         },
         AGGRESSIVE {
+            override fun pass(): Boolean {
+                return true
+            }
+
             override fun shouldKeep(frustum: Frustum, particle: Particle): Boolean {
-                return (frustum as FrustumAccessor).intersection.testPoint(
-                    ((particle as ParticleAccessor).x - frustum.camX).toFloat(),
-                    ((particle as ParticleAccessor).y - frustum.camY).toFloat(),
-                    ((particle as ParticleAccessor).z - frustum.camZ).toFloat()
-                )
+                return true //this is passed in this version
             }
         },
         BOUNDING_BOX {
+            override fun pass(): Boolean {
+                return false
+            }
+
             override fun shouldKeep(frustum: Frustum, particle: Particle): Boolean {
                 return frustum.isVisible(particle.boundingBox)
             }
         };
+
+        abstract fun pass(): Boolean
 
         abstract fun shouldKeep(frustum: Frustum, particle: Particle): Boolean
 

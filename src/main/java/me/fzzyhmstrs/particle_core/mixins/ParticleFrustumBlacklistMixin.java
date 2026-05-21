@@ -2,25 +2,13 @@ package me.fzzyhmstrs.particle_core.mixins;
 
 import me.fallenbreath.conditionalmixin.api.annotation.Condition;
 import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
-import me.fzzyhmstrs.fzzy_config.util.TriState;
-import me.fzzyhmstrs.particle_core.PcConfig;
-import me.fzzyhmstrs.particle_core.interfaces.BlockPosStorer;
 import me.fzzyhmstrs.particle_core.interfaces.FrustumBlacklisted;
 import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.BlockPos;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Environment(EnvType.CLIENT)
 @Restriction(

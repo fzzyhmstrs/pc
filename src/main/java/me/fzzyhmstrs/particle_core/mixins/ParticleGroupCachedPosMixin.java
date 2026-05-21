@@ -9,7 +9,6 @@ import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleGroup;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,8 +22,6 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(ParticleGroup.class)
 public class ParticleGroupCachedPosMixin {
 
-    // TODO(Ravel): wildcard and regex target are not supported
-// TODO(Ravel): wildcard and regex target are not supported
 	@WrapOperation(method = "tickParticle", at = @At(value = "INVOKE", target = "net/minecraft/client/particle/Particle.tick ()V"))
     private void particle_core_tickParticlePositions(Particle instance, Operation<Void> original) {
         ((BlockPosStorer) instance).particle_core_tickCachedPos();

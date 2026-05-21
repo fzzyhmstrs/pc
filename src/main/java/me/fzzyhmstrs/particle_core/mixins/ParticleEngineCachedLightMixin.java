@@ -1,16 +1,11 @@
 package me.fzzyhmstrs.particle_core.mixins;
 
-import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenCustomHashMap;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import me.fallenbreath.conditionalmixin.api.annotation.Condition;
 import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
-import me.fzzyhmstrs.particle_core.interfaces.CachedLightPreparer;
 import me.fzzyhmstrs.particle_core.interfaces.CachedLightProvider;
 import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;

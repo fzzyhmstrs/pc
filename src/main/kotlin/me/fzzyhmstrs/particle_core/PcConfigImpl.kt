@@ -21,9 +21,9 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.particle.Particle
 import net.minecraft.client.renderer.culling.Frustum
 import net.minecraft.core.particles.ParticleType
-import net.minecraft.server.level.ParticleStatus
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.Identifier
+import net.minecraft.server.level.ParticleStatus
 import net.minecraft.util.Mth
 import java.util.function.Predicate
 
@@ -91,6 +91,10 @@ class PcConfigImpl: Config(Identifier.fromNamespaceAndPath("particle_core","part
     fun shouldSpawnParticle(type: ParticleType<*>): Boolean {
         val chance = byTypeReductions[BuiltInRegistries.PARTICLE_TYPE.getKey(type) ?: return true] ?: return true
         return PcUtils.random.nextDouble() < chance
+    }
+
+    fun passParticleCull(): Boolean {
+        return cullingBehavior.get().pass()
     }
 
     fun keepParticle(frustum: Frustum, particle: Particle): Boolean {

@@ -1,6 +1,5 @@
 package me.fzzyhmstrs.particle_core.mixins;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import me.fallenbreath.conditionalmixin.api.annotation.Condition;
 import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import me.fzzyhmstrs.particle_core.PcConfig;
@@ -42,9 +41,10 @@ public class ParticleEngineFrustumMixin implements FrustumProvider {
         return cachedFrustum;
     }
 
-    @Inject(method = "createParticle(Lnet/minecraft/core/particles/ParticleOptions;DDDDDD)Lnet/minecraft/client/particle/Particle;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/particle/ParticleEngine;add(Lnet/minecraft/client/particle/Particle;)V"))
-    private void particle_core_setupBlacklistForParticle(ParticleOptions parameters, double x, double y, double z, double velocityX, double velocityY, double velocityZ, CallbackInfoReturnable<Particle> cir, @Local Particle particle) {
-        if (PcConfig.INSTANCE.getImpl().shouldBlacklistParticle(parameters.getType())) {
+    @Inject(method = "createParticle", at = @At("RETURN"))
+    private void particle_core_setupBlacklistForParticle(ParticleOptions parameters, double x, double y, double z, double velocityX, double velocityY, double velocityZ, CallbackInfoReturnable<Particle> cir) {
+        Particle particle = cir.getReturnValue();
+        if (particle != null && PcConfig.INSTANCE.getImpl().shouldBlacklistParticle(parameters.getType())) {
             ((FrustumBlacklisted) particle).particle_core_setBlacklisted();
         }
     }

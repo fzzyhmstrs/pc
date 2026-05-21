@@ -69,8 +69,7 @@ object PcDisable {
             }*/
             if(disableOptimizations.contains("CULLING")) {
                 if (className.endsWith("FrustumAccessor")
-                    || className.endsWith("ParticleManagerFrustumMixin")
-                    || className.endsWith("WorldRendererFrustumMixin"))
+                    || className.endsWith("ParticleRendererFrustumMixin"))
                 {
                     println("Disabling [$className] due to 'CULLING' key in particle core config!")
                     return true

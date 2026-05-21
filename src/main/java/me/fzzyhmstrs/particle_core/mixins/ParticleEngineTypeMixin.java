@@ -12,8 +12,8 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.tags.TagKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,7 +32,7 @@ public class ParticleEngineTypeMixin {
     @Unique
     private final TagKey<ParticleType<?>> tag = TagKey.create(Registries.PARTICLE_TYPE, Identifier.fromNamespaceAndPath("particle_core","excluded_particles"));
 
-    @Inject(method = "makeParticle", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "createParticle", at = @At("HEAD"), cancellable = true)
     private void particle_core_excludeAndChanceParticles(ParticleOptions parameters, double x, double y, double z, double velocityX, double velocityY, double velocityZ, CallbackInfoReturnable<Particle> cir) {
         if (PcConfig.INSTANCE.getImpl().getDisableParticles().get()) cir.setReturnValue(null);
         if(BuiltInRegistries.PARTICLE_TYPE.wrapAsHolder(parameters.getType()).is(tag)) cir.setReturnValue(null);
