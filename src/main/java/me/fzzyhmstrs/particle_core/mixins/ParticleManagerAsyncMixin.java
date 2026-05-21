@@ -14,23 +14,11 @@ import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleGroup;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.core.particles.ParticleLimit;
-import net.minecraft.ReportedException;
 import net.minecraft.util.profiling.Profiler;
-import org.spongepowered.asm.mixin.Debug;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
@@ -55,24 +43,18 @@ public abstract class ParticleEngineAsyncMixin {
 
 	@Shadow protected abstract void updateCount(ParticleLimit group, int count);
 
-	// TODO(Ravel): wildcard and regex target are not supported
-// TODO(Ravel): wildcard and regex target are not supported
 	@WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "com/google/common/collect/Maps.newIdentityHashMap ()Ljava/util/IdentityHashMap;"))
 	private IdentityHashMap<?, ?> particle_core_setupSynchronizedParticleMap(Operation<IdentityHashMap<?, ?>> original) {
 		return new SynchronizedIdentityHashMap<>(original.call());
 	}
 
-	// TODO(Ravel): wildcard and regex target are not supported
-// TODO(Ravel): wildcard and regex target are not supported
-	@WrapOperation(method = "addParticle(Lnet/minecraft/client/particle/Particle;)V", at = @At(value = "INVOKE", target = "java/util/Queue.add (Ljava/lang/Object;)Z"))
+	@WrapOperation(method = "add(Lnet/minecraft/client/particle/Particle;)V", at = @At(value = "INVOKE", target = "java/util/Queue.add (Ljava/lang/Object;)Z"))
 	private boolean particle_core_synchronizeParticleAdds(Queue<? extends Particle> instance, Object e, Operation<Boolean> original) {
 		synchronized (lock) {
 			return original.call(instance, e);
 		}
 	}
 
-	// TODO(Ravel): wildcard and regex target are not supported
-// TODO(Ravel): wildcard and regex target are not supported
 	@SuppressWarnings({"SynchronizeOnNonFinalField"})
 	@WrapOperation(method = "tick", at = @At(value = "INVOKE", target = "java/util/Map.forEach (Ljava/util/function/BiConsumer;)V"))
 	private void particle_core_asyncParticleTicking(Map<ParticleRenderType, Queue<Particle>> instance, BiConsumer<? super ParticleRenderType, ? extends Queue<Particle>> v, Operation<Void> original) {

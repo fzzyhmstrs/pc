@@ -20,8 +20,6 @@ import org.spongepowered.asm.mixin.injection.At;
 @Mixin(ParticleGroup.class)
 public class ParticleGroupCachedPosMixin {
 
-    // TODO(Ravel): wildcard and regex target are not supported
-// TODO(Ravel): wildcard and regex target are not supported
 	@WrapOperation(method = "tickParticle", at = @At(value = "INVOKE", target = "net/minecraft/client/particle/Particle.tick ()V"))
     private void particle_core_tickParticlePositions(Particle instance, Operation<Void> original) {
         ((BlockPosStorer) instance).particle_core_tickCachedPos();

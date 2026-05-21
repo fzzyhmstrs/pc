@@ -19,9 +19,9 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.particle.Particle
 import net.minecraft.client.renderer.culling.Frustum
 import net.minecraft.core.particles.ParticleType
-import net.minecraft.server.level.ParticleStatus
 import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.resources.Identifier
+import net.minecraft.server.level.ParticleStatus
 import net.minecraft.util.Mth
 import java.util.function.Predicate
 
