@@ -1,3 +1,4 @@
+// TODO(Ravel): Failed to fully resolve file: null cannot be cast to non-null type com.intellij.psi.PsiClass
 package me.fzzyhmstrs.particle_core.mixins;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -8,13 +9,13 @@ import me.fzzyhmstrs.particle_core.interfaces.BlockPosStorer;
 import me.fzzyhmstrs.particle_core.interfaces.CachedLightPreparer;
 import me.fzzyhmstrs.particle_core.interfaces.CachedLightProvider;
 import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockRenderView;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockAndTintGetter;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,15 +33,17 @@ public class ParticleBrightnessCacheMixin implements CachedLightPreparer {
     @Shadow protected double x;
     @Shadow protected double y;
     @Shadow protected double z;
-    @Shadow @Final protected ClientWorld world;
+    @Shadow @Final protected ClientLevel level;
 
     @Unique
     private int particle_core_cachedLight = -1;
 
-    @WrapOperation(method = "getBrightness", at = @At(value = "INVOKE", target = "net/minecraft/client/render/WorldRenderer.getLightmapCoordinates (Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/util/math/BlockPos;)I"), require = 0)
-    private int particle_core_getCachedBrightness(BlockRenderView world, BlockPos pos, Operation<Integer> original) {
+    // TODO(Ravel): wildcard and regex target are not supported
+// TODO(Ravel): wildcard and regex target are not supported
+	@WrapOperation(method = "getBrightness", at = @At(value = "INVOKE", target = "net/minecraft/client/render/WorldRenderer.getLightmapCoordinates (Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/util/math/BlockPos;)I"), require = 0)
+    private int particle_core_getCachedBrightness(BlockAndTintGetter world, BlockPos pos, Operation<Integer> original) {
         if (particle_core_cachedLight == -1) {
-            particle_core_cachedLight = WorldRenderer.getLightmapCoordinates(world, pos);
+            particle_core_cachedLight = LevelRenderer.getLightColor(world, pos);
         }
         return particle_core_cachedLight;
     }
@@ -49,11 +52,11 @@ public class ParticleBrightnessCacheMixin implements CachedLightPreparer {
     public void particle_core_tickLightUpdate() {
         BlockPos blockPos = ((BlockPosStorer)this).particle_core_getCachedPos();
         BlockState state = ((BlockPosStorer)this).particle_core_getCachedState();
-        particle_core_cachedLight = ((CachedLightProvider) MinecraftClient.getInstance().particleManager).particle_core_getCache().computeIfAbsent(blockPos, (p) -> getLightmap(this.world, state, blockPos));
+        particle_core_cachedLight = ((CachedLightProvider) Minecraft.getInstance().particleEngine).particle_core_getCache().computeIfAbsent(blockPos, (p) -> getLightmap(this.world, state, blockPos));
     }
 
     @Unique
-    private int getLightmap(BlockRenderView world, BlockState state, BlockPos blockPos) {
-        return WorldRenderer.getLightmapCoordinates(WorldRenderer.BrightnessGetter.DEFAULT, world, state, blockPos);
+    private int getLightmap(BlockAndTintGetter world, BlockState state, BlockPos blockPos) {
+        return LevelRenderer.getLightColor(LevelRenderer.BrightnessGetter.DEFAULT, world, state, blockPos);
     }
 }

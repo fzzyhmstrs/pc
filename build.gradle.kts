@@ -2,10 +2,12 @@ import com.matthewprenger.cursegradle.CurseArtifact
 import com.matthewprenger.cursegradle.CurseProject
 import com.matthewprenger.cursegradle.CurseRelation
 import com.matthewprenger.cursegradle.Options
+import org.gradle.api.internal.artifacts.dependencies.DefaultImmutableVersionConstraint.strictly
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.net.URI
 
 plugins {
-    id("dev.architectury.loom")
+    id("net.neoforged.moddev")
     val kotlinVersion: String by System.getProperties()
     kotlin("jvm").version(kotlinVersion)
     id("com.modrinth.minotaur") version "2.+"
@@ -24,6 +26,18 @@ val mavenGroup: String by project
 group = mavenGroup
 println("## Changelog for ${base.archivesName.get()} $modVersion \n\n" + log.readText())
 println(base.archivesName.get().replace('_','-'))
+
+val loaderVersion: String by project
+neoForge {
+    version = loaderVersion
+
+    runs {
+        register("client") {
+            client()
+        }
+    }
+}
+
 repositories {
     maven {
         name = "FallenBreath"
@@ -56,7 +70,7 @@ repositories {
 dependencies {
     val guavaVersion: String by project
     implementation("com.google.guava:guava:$guavaVersion")
-    val minecraftVersion: String by project
+    /*val minecraftVersion: String by project
     minecraft("com.mojang:minecraft:$minecraftVersion")
     val yarnMappings: String by project
     val yarnMappingsPatchVersion: String by project
@@ -65,26 +79,31 @@ dependencies {
         mappings("dev.architectury:yarn-mappings-patch-neoforge:$yarnMappingsPatchVersion")
     })
     val loaderVersion: String by project
-    neoForge("net.neoforged:neoforge:$loaderVersion")
+    neoForge("net.neoforged:neoforge:$loaderVersion")*/
 
     val kotlinForForgeVersion: String by project
-    modRuntimeOnly("thedarkcolour:kotlinforforge-neoforge:$kotlinForForgeVersion")
+    runtimeOnly("thedarkcolour:kotlinforforge-neoforge:$kotlinForForgeVersion")
 
     val fzzyConfigVersion: String by project
-    modImplementation("me.fzzyhmstrs:fzzy_config:$fzzyConfigVersion+$minecraftVersion+neoforge"){
+    implementation("me.fzzyhmstrs:fzzy_config:$fzzyConfigVersion+$minecraftVersion+neoforge"){
         exclude("net.fabricmc.fabric-api")
     }
 
     val cmVersion: String by project
     implementation("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-neoforge:$cmVersion")
-    include("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-neoforge:$cmVersion")
+    jarJar("com.github.Fallen-Breath.conditional-mixin:conditional-mixin-neoforge:$cmVersion") {
+        version {
+            strictly(cmVersion)
+            prefer(cmVersion)
+        }
+    }
 
     runtimeOnly("net.peanuuutz.tomlkt:tomlkt:0.3.7")
     runtimeOnly("blue.endless:jankson:1.2.3")
 }
 
 tasks {
-    val javaVersion = JavaVersion.VERSION_21
+    val javaVersion = JavaVersion.VERSION_25
     withType<JavaCompile> {
         options.encoding = "UTF-8"
         sourceCompatibility = javaVersion.toString()
@@ -92,7 +111,11 @@ tasks {
         options.release.set(javaVersion.toString().toInt())
     }
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions { jvmTarget = javaVersion.toString() }
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_25)
+        }
+        //java.sourceCompatibility = javaVersion
+        //targetCompatibility = javaVersion.toString()
     }
 
     jar {
@@ -133,7 +156,7 @@ if (System.getenv("MODRINTH_TOKEN") != null) {
         versionNumber.set("$modVersion+$minecraftVersion+neoforge")
         versionName.set("${base.archivesName.get()}-$modVersion+$minecraftVersion+neoforge")
         versionType.set(releaseType)
-        uploadFile.set(tasks.remapJar.get())
+        uploadFile.set(tasks.jar.get())
         gameVersions.addAll(mcVersions.split(","))
         loaders.addAll("neoforge")
         detectLoaders.set(false)
@@ -162,7 +185,7 @@ if (System.getenv("CURSEFORGE_TOKEN") != null) {
                 addGameVersion(ver)
             }
             addGameVersion("NeoForge")
-            mainArtifact(tasks.remapJar.get().archiveFile.get(), closureOf<CurseArtifact> {
+            mainArtifact(tasks.jar.get().archiveFile.get(), closureOf<CurseArtifact> {
                 displayName = "${base.archivesName.get()}-$modVersion+$minecraftVersion+neoforge"
                 relations(closureOf<CurseRelation> {
                     this.requiredDependency("kotlin-for-forge")

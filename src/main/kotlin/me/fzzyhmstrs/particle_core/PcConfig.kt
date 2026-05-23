@@ -5,10 +5,10 @@ import me.fzzyhmstrs.fzzy_config.api.RegisterType
 import me.fzzyhmstrs.fzzy_config.util.EnumTranslatable
 import me.fzzyhmstrs.particle_core.mixins.ParticleAccessor
 import net.minecraft.client.particle.Particle
-import net.minecraft.client.render.Frustum
-import net.minecraft.util.math.Vec3d
+import net.minecraft.client.renderer.culling.Frustum
+import net.minecraft.world.phys.Vec3
 import org.slf4j.Logger
-import net.minecraft.util.Identifier
+import net.minecraft.resources.Identifier
 import org.slf4j.LoggerFactory
 import net.neoforged.fml.common.Mod
 import java.util.function.Predicate
@@ -34,8 +34,8 @@ object PcConfig {
 
     var impl: PcConfigImpl = ConfigApi.registerAndLoadConfig({ PcConfigImpl() }, RegisterType.CLIENT)
 
-    fun shouldRenderParticle(x: Double, y: Double, z: Double, pos: Vec3d): Boolean {
-        return pos.squaredDistanceTo(x, y, z) <= renderDistance
+    fun shouldRenderParticle(x: Double, y: Double, z: Double, pos: Vec3): Boolean {
+        return pos.distanceToSqr(x, y, z) <= renderDistance
     }
 
     fun shouldDisablePotionParticle(type: PotionDisableType): Boolean {

@@ -15,20 +15,20 @@ import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedFloat
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedInt
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber
 import me.fzzyhmstrs.fzzy_config.validation.number.ValidatedNumber.Companion.withIncrement
-import net.minecraft.client.MinecraftClient
+import net.minecraft.client.Minecraft
 import net.minecraft.client.particle.Particle
-import net.minecraft.client.render.Frustum
-import net.minecraft.particle.ParticleType
-import net.minecraft.particle.ParticlesMode
-import net.minecraft.registry.Registries
-import net.minecraft.util.Identifier
-import net.minecraft.util.math.MathHelper
+import net.minecraft.client.renderer.culling.Frustum
+import net.minecraft.core.particles.ParticleType
+import net.minecraft.server.level.ParticleStatus
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.resources.Identifier
+import net.minecraft.util.Mth
 import java.util.function.Predicate
 
 @ConvertFrom("particle_core_config_v1.json")
 @IgnoreVisibility
 @Version(1)
-class PcConfigImpl: Config(Identifier.of("particle_core","particle_core_config"), "","") {
+class PcConfigImpl: Config(Identifier.fromNamespaceAndPath("particle_core","particle_core_config"), "","") {
 
     override fun update(deserializedVersion: Int) {
         if (deserializedVersion == 0) {
@@ -44,7 +44,7 @@ class PcConfigImpl: Config(Identifier.of("particle_core","particle_core_config")
 
     var disableParticles = ValidatedBoolean(false)
 
-    private var byTypeReductions = ValidatedIdentifierMap(mapOf(), ValidatedIdentifier.ofRegistry(Identifier.of("smoke"), Registries.PARTICLE_TYPE), ValidatedDouble(1.0, 1.0, 0.0))
+    private var byTypeReductions = ValidatedIdentifierMap(mapOf(), ValidatedIdentifier.ofRegistry(Identifier.parse("smoke"), BuiltInRegistries.PARTICLE_TYPE), ValidatedDouble(1.0, 1.0, 0.0))
 
     @RequiresAction(Action.RESTART)
     var maxParticlesPerSheet = ValidatedInt(16384, Int.MAX_VALUE, 0, ValidatedNumber.WidgetType.TEXTBOX_WITH_BUTTONS).withIncrement(1000)
@@ -78,24 +78,24 @@ class PcConfigImpl: Config(Identifier.of("particle_core","particle_core_config")
         }
 
     fun setupParticleViewDistance() {
-        PcConfig.renderDistance = MathHelper.square(MinecraftClient.getInstance().options.clampedViewDistance * 16 * particleRenderDistanceMultiplier.get())
+        PcConfig.renderDistance = Mth.square(Minecraft.getInstance().options.effectiveRenderDistance * 16 * particleRenderDistanceMultiplier.get())
     }
 
     fun shouldSpawnParticle(type: ParticleType<*>): Boolean {
-        val chance = byTypeReductions[Registries.PARTICLE_TYPE.getId(type) ?: return true] ?: return true
+        val chance = byTypeReductions[BuiltInRegistries.PARTICLE_TYPE.getKey(type) ?: return true] ?: return true
         return PcUtils.random.nextDouble() < chance
     }
 
-    fun getReducedParticleSpawnType(mode: ParticlesMode): ParticlesMode {
+    fun getReducedParticleSpawnType(mode: ParticleStatus): ParticleStatus {
         var outMode = mode
-        if (outMode == ParticlesMode.ALL){
+        if (outMode == ParticleStatus.ALL){
             if (PcUtils.random.nextFloat() < reduceAllChance.get()){
-                outMode = ParticlesMode.DECREASED
+                outMode = ParticleStatus.DECREASED
             }
         }
-        if (outMode == ParticlesMode.DECREASED){
+        if (outMode == ParticleStatus.DECREASED){
             if (PcUtils.random.nextFloat() < reduceDecreasedChance.get()){
-                outMode = ParticlesMode.MINIMAL
+                outMode = ParticleStatus.MINIMAL
             }
         }
         return outMode

@@ -5,10 +5,10 @@ import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import me.fzzyhmstrs.fzzy_config.util.TriState;
 import me.fzzyhmstrs.particle_core.interfaces.BlockPosStorer;
 import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -27,10 +27,10 @@ public class ParticleCachePosMixin implements BlockPosStorer {
     @Shadow protected double x;
     @Shadow protected double y;
     @Shadow protected double z;
-    @Shadow @Final protected ClientWorld world;
+    @Shadow @Final protected ClientLevel level;
 
     @Unique
-    private volatile BlockPos cachedPos = BlockPos.ORIGIN;
+    private volatile BlockPos cachedPos = BlockPos.ZERO;
     @Unique
     @Nullable
     private volatile BlockState cachedState = null;
@@ -39,7 +39,7 @@ public class ParticleCachePosMixin implements BlockPosStorer {
 
     @Override
     public void particle_core_tickCachedPos() {
-        cachedPos = BlockPos.ofFloored(this.x, this.y, this.z);
+        cachedPos = BlockPos.containing(this.x, this.y, this.z);
         cachedState = null;
         isEmpty = TriState.DEFAULT;
     }
@@ -52,7 +52,7 @@ public class ParticleCachePosMixin implements BlockPosStorer {
     @Override
     public BlockState particle_core_getCachedState() {
         if (cachedState == null) {
-            cachedState = this.world.getBlockState(cachedPos);
+            cachedState = this.level.getBlockState(cachedPos);
         }
         return cachedState;
     }
@@ -60,7 +60,7 @@ public class ParticleCachePosMixin implements BlockPosStorer {
     @Override
     public boolean particle_core_getCachedEmpty() {
         if (isEmpty == TriState.DEFAULT) {
-            isEmpty = TriState.Companion.of(particle_core_getCachedState().getCollisionShape(this.world, cachedPos).isEmpty());
+            isEmpty = TriState.Companion.of(particle_core_getCachedState().getCollisionShape(this.level, cachedPos).isEmpty());
         }
         return isEmpty.getAsBoolean();
     }

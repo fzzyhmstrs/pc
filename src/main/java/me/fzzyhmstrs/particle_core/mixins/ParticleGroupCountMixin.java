@@ -7,8 +7,8 @@ import me.fallenbreath.conditionalmixin.api.annotation.Condition;
 import me.fallenbreath.conditionalmixin.api.annotation.Restriction;
 import me.fzzyhmstrs.particle_core.PcConfig;
 import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
-import net.minecraft.client.particle.ParticleRenderer;
-import net.minecraft.client.particle.ParticleTextureSheet;
+import net.minecraft.client.particle.ParticleGroup;
+import net.minecraft.client.particle.ParticleRenderType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
@@ -19,8 +19,8 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 				@Condition(type = Condition.Type.TESTER, tester = PcConditionTester.class)
 		}
 )
-@Mixin(value = ParticleRenderer.class, priority = 100000)
-public class ParticleRendererCountMixin {
+@Mixin(value = ParticleGroup.class, priority = 100000)
+public class ParticleGroupCountMixin {
 
 	@ModifyConstant(method = "<init>", constant = @Constant(intValue = 16384))
 	private int particle_core_modifyParticleMaxCount(int original) {
