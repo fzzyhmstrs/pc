@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(QuadParticleGroup.class)
-public abstract class ParticleRendererRenderDistanceMixin {
+public abstract class ParticleGroupRenderDistanceMixin {
 
 	// TODO(Ravel): wildcard and regex target are not supported
 // TODO(Ravel): wildcard and regex target are not supported

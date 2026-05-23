@@ -69,7 +69,7 @@ object PcDisable {
             }*/
             if(disableOptimizations.contains("CULLING")) {
                 if (className.endsWith("FrustumAccessor")
-                    || className.endsWith("ParticleRendererFrustumMixin"))
+                    || className.endsWith("ParticleGroupFrustumMixin"))
                 {
                     println("Disabling [$className] due to 'CULLING' key in particle core config!")
                     return true
@@ -83,8 +83,8 @@ object PcDisable {
                 }
             }
             if(disableOptimizations.contains("TYPE")) {
-                if (className.endsWith("ParticleManagerTypeMixin")
-                    || className.endsWith("ParticleManagerCreatorMixin")
+                if (className.endsWith("ParticleEngineTypeMixin")
+                    || className.endsWith("ParticleEngineCreatorMixin")
                     || className.endsWith("FireworksSparkParticleMixin"))
                 {
                     println("Disabling [$className] due to 'TYPE' key in particle core config!")
@@ -92,14 +92,14 @@ object PcDisable {
                 }
             }
             if(disableOptimizations.contains("DECREASE")) {
-                if (className.endsWith("ClientWorldDecreaseMixin"))
+                if (className.endsWith("ClientLevelDecreaseMixin"))
                 {
                     println("Disabling [$className] due to 'DECREASE' key in particle core config!")
                     return true
                 }
             }
             if(disableOptimizations.contains("LIGHTMAP")) {
-                if (className.endsWith("ParticleManagerCachedLightMixin")
+                if (className.endsWith("ParticleEngineCachedLightMixin")
                     || className.endsWith("ParticleBrightnessCacheMixin"))
                 {
                     println("Disabling [$className] due to 'LIGHTMAP' key in particle core config!")
@@ -121,7 +121,7 @@ object PcDisable {
                 }
                 if(disableOptimizations.contains("LIGHTMAP")) {
                     if (className.endsWith("ParticleCachePosMixin")
-                        || className.endsWith("ParticleRendererCachedPosMixin"))
+                        || className.endsWith("ParticleGroupCachedPosMixin"))
                     {
                         println("Disabling [$className] due to 'MOVE' and 'LIGHTMAP' key in particle core config!")
                         return true
@@ -137,22 +137,22 @@ object PcDisable {
                 }
             }*/
             if(disableOptimizations.contains("COUNT")) {
-                if (className.endsWith("ParticleRendererCountMixin"))
+                if (className.endsWith("ParticleGroupCountMixin"))
                 {
                     println("Disabling [$className] due to 'COUNT' key in particle core config!")
                     return true
                 }
             }
             if(disableOptimizations.contains("ASYNC")) {
-                if (className.endsWith("ParticleManagerAsyncMixin")
-                    || className.endsWith("ParticleRendererAccessor"))
+                if (className.endsWith("ParticleEngineAsyncMixin")
+                    || className.endsWith("ParticleGroupAccessor"))
                 {
                     println("Disabling [$className] due to 'ASYNC' key in particle core config!")
                     return true
                 }
             }
             if(disableOptimizations.contains("RENDER_DISTANCE")) {
-                if (className.endsWith("ParticleManagerRenderDistanceMixin"))
+                if (className.endsWith("ParticleGroupRenderDistanceMixin"))
                 {
                     println("Disabling [$className] due to 'RENDER_DISTANCE' key in particle core config!")
                     return true

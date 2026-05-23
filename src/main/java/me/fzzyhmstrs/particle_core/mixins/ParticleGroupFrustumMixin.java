@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(QuadParticleGroup.class)
-public abstract class ParticleRendererFrustumMixin {
+public abstract class ParticleGroupFrustumMixin {
 
 	@WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/culling/Frustum;pointInFrustum(DDD)Z"))
 	private boolean particle_core_cullParticles(Frustum instance, double x, double y, double z, Operation<Boolean> original, @Local SingleQuadParticle particle, @Local(argsOnly = true) Camera camera) {

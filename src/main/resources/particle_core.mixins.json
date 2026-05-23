@@ -23,10 +23,10 @@
     "ParticleGroupAccessor",
     "ParticleGroupBrightnessTickMixin",
     "ParticleGroupCachedPosMixin",
+    "ParticleGroupFrustumMixin",
+    "ParticleGroupRenderDistanceMixin",
     "ParticleGroupCountMixin",
-    "ParticleMoveAdjustMixin",
-    "ParticleRendererFrustumMixin",
-    "ParticleRendererRenderDistanceMixin"
+    "ParticleMoveAdjustMixin"
   ],
   "server": [
   ],
