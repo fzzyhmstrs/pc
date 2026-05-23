@@ -152,7 +152,8 @@ object PcDisable {
                 }
             }
             if(disableOptimizations.contains("RENDER_DISTANCE")) {
-                if (className.endsWith("ParticleGroupRenderDistanceMixin"))
+                if (className.endsWith("ParticleGroupRenderDistanceMixin")
+                    || className.endsWith("ParticleEngineRenderDistanceMixin"))
                 {
                     println("Disabling [$className] due to 'RENDER_DISTANCE' key in particle core config!")
                     return true
