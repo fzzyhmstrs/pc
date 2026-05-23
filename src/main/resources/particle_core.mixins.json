@@ -20,9 +20,9 @@
     "ParticleGroupAccessor",
     "ParticleGroupBrightnessTickMixin",
     "ParticleGroupCachedPosMixin",
+    "ParticleGroupRenderDistanceMixin",
     "ParticleGroupCountMixin",
-    "ParticleMoveAdjustMixin",
-    "ParticleGroupRenderDistanceMixin"
+    "ParticleMoveAdjustMixin"
   ],
   "server": [
   ],
