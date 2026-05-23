@@ -51,7 +51,7 @@ public class ParticleBrightnessCacheMixin implements CachedLightPreparer {
     public void particle_core_tickLightUpdate() {
         BlockPos blockPos = ((BlockPosStorer)this).particle_core_getCachedPos();
         BlockState state = ((BlockPosStorer)this).particle_core_getCachedState();
-        particle_core_cachedLight = ((CachedLightProvider) Minecraft.getInstance().particleEngine).particle_core_getCache().computeIfAbsent(blockPos, (p) -> getLightmap(this.world, state, blockPos));
+        particle_core_cachedLight = ((CachedLightProvider) Minecraft.getInstance().particleEngine).particle_core_getCache().computeIfAbsent(blockPos, (p) -> getLightmap(this.level, state, blockPos));
     }
 
     @Unique

@@ -1,4 +1,3 @@
-// TODO(Ravel): Failed to fully resolve file: null cannot be cast to non-null type com.intellij.psi.PsiClass
 package me.fzzyhmstrs.particle_core.mixins;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -9,6 +8,7 @@ import me.fzzyhmstrs.particle_core.PcConfig;
 import me.fzzyhmstrs.particle_core.SynchronizedIdentityHashMap;
 import me.fzzyhmstrs.particle_core.interfaces.TickResult;
 import me.fzzyhmstrs.particle_core.plugin.PcConditionTester;
+import net.minecraft.ReportedException;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleGroup;
@@ -103,7 +103,7 @@ public abstract class ParticleEngineAsyncMixin {
 
 	@Unique
 	private TickResult.Results asyncTickParticles(ParticleGroup<? extends Particle> particleCollection) {
-		Consumer<Particle> tick = ((ParticleRendererAccessor)particleCollection)::callTickParticle;
+		Consumer<Particle> tick = ((ParticleGroupAccessor)particleCollection)::callTickParticle;
 
 		List<TickResult> results = particleCollection.getAll().parallelStream().map((p) -> tickParticleSafe(tick, p)).toList();
 		return new TickResult.Results(results, particleCollection);
@@ -149,7 +149,7 @@ public abstract class ParticleEngineAsyncMixin {
 		for (TickResult tr : result.results()) {
 			if (tr.failure()) { //assign failures to the unsafe set and get them ticked
 				i += 1;
-				((ParticleRendererAccessor)result.originalCollection()).callTickParticle(tr.particle());
+				((ParticleGroupAccessor)result.originalCollection()).callTickParticle(tr.particle());
 			}
 		}
 		if (i > (result.originalCollection().getAll().size() * 2 / 3)) {
@@ -160,7 +160,7 @@ public abstract class ParticleEngineAsyncMixin {
 		while (iterator.hasNext()) {
 			Particle particle = iterator.next();
 			if (particle.isAlive()) continue;
-			particle.getParticleLimit().ifPresent(group -> this.addTo(group, -1));
+			particle.getParticleLimit().ifPresent(group -> this.updateCount(group, -1));
 			iterator.remove();
 		}
 	}

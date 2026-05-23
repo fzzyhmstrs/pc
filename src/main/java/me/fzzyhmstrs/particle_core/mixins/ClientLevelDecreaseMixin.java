@@ -1,4 +1,3 @@
-// TODO(Ravel): Failed to fully resolve file: null cannot be cast to non-null type com.intellij.psi.PsiClass
 package me.fzzyhmstrs.particle_core.mixins;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;

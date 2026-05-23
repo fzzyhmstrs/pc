@@ -17,13 +17,12 @@
     "ParticleEngineCreatorMixin",
     "ParticleEngineRenderDistanceMixin",
     "ParticleEngineTypeMixin",
-    "ParticleFrustumBlacklistMixin",
     "ParticleGroupAccessor",
     "ParticleGroupBrightnessTickMixin",
     "ParticleGroupCachedPosMixin",
     "ParticleGroupCountMixin",
     "ParticleMoveAdjustMixin",
-    "ParticleRendererRenderDistanceMixin"
+    "ParticleGroupRenderDistanceMixin"
   ],
   "server": [
   ],

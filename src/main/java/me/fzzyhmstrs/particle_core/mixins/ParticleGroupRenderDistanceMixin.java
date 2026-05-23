@@ -9,10 +9,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(QuadParticleGroup.class)
-public abstract class ParticleRendererRenderDistanceMixin {
+public abstract class ParticleGroupRenderDistanceMixin {
 
-	// TODO(Ravel): wildcard and regex target are not supported
-// TODO(Ravel): wildcard and regex target are not supported
 	@WrapWithCondition(method = "extractRenderState", at = @At(value = "INVOKE", target = "net/minecraft/client/particle/SingleQuadParticle.extract (Lnet/minecraft/client/renderer/state/level/QuadParticleRenderState;Lnet/minecraft/client/Camera;F)V"))
 	private boolean particle_core_buildGeoIfWithinRenderDistance(SingleQuadParticle instance, net.minecraft.client.renderer.state.level.QuadParticleRenderState particleTypeRenderState, Camera camera, float partialTickTime) {
 		return PcConfig.INSTANCE.shouldRenderParticle(
