@@ -36,6 +36,12 @@ neoForge {
             client()
         }
     }
+
+    mods {
+        register("testProject") {
+            sourceSet(sourceSets.main.get())
+        }
+    }
 }
 
 repositories {

@@ -19,27 +19,27 @@ config = "particle_core.mixins.json"
 [[dependencies.particle_core]]
 modId = "neoforge"
 type = "REQUIRED"
-versionRange = "[21.11.36-beta,)"
+versionRange = "[26.1.0.1-beta,)"
 ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.particle_core]]
 modId = "minecraft"
 type = "REQUIRED"
-versionRange = "[1.21.11]"
+versionRange = "[26.1,)"
 ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.particle_core]]
 modId = "kotlinforforge"
 type = "REQUIRED"
-versionRange = "[6.0.0,)"
+versionRange = "[6.2.0,)"
 ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.particle_core]]
 modId = "fzzy_config"
 type = "REQUIRED"
-versionRange = "[0.7.5,)"
+versionRange = "[0.7.6,)"
 ordering = "AFTER"
 side = "BOTH"

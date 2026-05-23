@@ -22,7 +22,9 @@ class ParticleCoreNeoForge() {
 
 object PcConfig {
 
-    fun init(){}
+    fun init() {
+        println("Particle Core initialized")
+    }
 
     val logger: Logger =  LoggerFactory.getLogger("particle_core")
 
