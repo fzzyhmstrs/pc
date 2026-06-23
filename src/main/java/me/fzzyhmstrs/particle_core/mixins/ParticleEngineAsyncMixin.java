@@ -108,7 +108,7 @@ public abstract class ParticleEngineAsyncMixin {
 	private TickResult.Results asyncTickParticles(ParticleGroup<? extends Particle> particleCollection) {
 		Consumer<Particle> tick = ((ParticleGroupAccessor)particleCollection)::callTickParticle;
 
-		List<TickResult> results = particleCollection.getAll().parallelStream().map((p) -> tickParticleSafe(tick, p)).toList();
+		List<TickResult> results = particleCollection.particles.parallelStream().map((p) -> tickParticleSafe(tick, p)).toList();
 		return new TickResult.Results(results, particleCollection);
 	}
 
@@ -155,11 +155,11 @@ public abstract class ParticleEngineAsyncMixin {
 				((ParticleGroupAccessor)result.originalCollection()).callTickParticle(tr.particle());
 			}
 		}
-		if (i > (result.originalCollection().getAll().size() * 2 / 3)) {
+		if (i > (result.originalCollection().particles.size() * 2 / 3)) {
 			PcConfig.INSTANCE.getLogger().error("Asynchronous particle ticking encountered issues with over 2/3 of particles; disabling");
 			PcConfig.INSTANCE.getImpl().getAsynchronousTicking().validateAndSet(false);
 		}
-		Iterator<? extends Particle> iterator = result.originalCollection().getAll().iterator();
+		Iterator<? extends Particle> iterator = result.originalCollection().particles.iterator();
 		while (iterator.hasNext()) {
 			Particle particle = iterator.next();
 			if (particle.isAlive()) continue;

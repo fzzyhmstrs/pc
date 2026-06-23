@@ -68,11 +68,15 @@ dependencies {
     }
 
     val cmVersion: String by project
-    implementation("me.fallenbreath:conditional-mixin:$cmVersion")
-    include("me.fallenbreath:conditional-mixin:$cmVersion")
+    implementation("me.fallenbreath:conditional-mixin-fabric:$cmVersion")
+    include("me.fallenbreath:conditional-mixin-fabric:$cmVersion")
 
     runtimeOnly("net.peanuuutz.tomlkt:tomlkt:0.3.7")
     runtimeOnly("blue.endless:jankson:1.2.3")
+}
+
+loom {
+    accessWidenerPath.set(file("src/main/resources/particle_core.accessWidener"))
 }
 
 tasks {
