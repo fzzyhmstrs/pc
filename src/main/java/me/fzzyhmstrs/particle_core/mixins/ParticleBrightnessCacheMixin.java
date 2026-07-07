@@ -15,6 +15,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Final;
@@ -40,10 +41,10 @@ public class ParticleBrightnessCacheMixin implements CachedLightPreparer {
     @Unique
     private int particle_core_cachedLight = -1;
 
-    @WrapOperation(method = "getLightCoords", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;getLightCoords(Lnet/minecraft/world/level/BlockAndLightGetter;Lnet/minecraft/core/BlockPos;)I"), require = 0)
+    @WrapOperation(method = "getLightCoords", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/LightCoordsUtil;getLightCoords(Lnet/minecraft/world/level/BlockAndLightGetter;Lnet/minecraft/core/BlockPos;)I"), require = 0)
     private int particle_core_getCachedBrightness(BlockAndLightGetter world, BlockPos pos, Operation<Integer> original) {
         if (particle_core_cachedLight == -1) {
-            particle_core_cachedLight = LevelRenderer.getLightCoords(world, pos);
+            particle_core_cachedLight = LightCoordsUtil.getLightCoords(world, pos);
         }
         return particle_core_cachedLight;
     }
@@ -57,6 +58,6 @@ public class ParticleBrightnessCacheMixin implements CachedLightPreparer {
 
     @Unique
     private int getLightmap(BlockAndLightGetter world, BlockState state, BlockPos blockPos) {
-        return LevelRenderer.getLightCoords(LevelRenderer.BrightnessGetter.DEFAULT, world, state, blockPos);
+        return LightCoordsUtil.getLightCoords(LightCoordsUtil.BrightnessGetter.DEFAULT, world, state, blockPos);
     }
 }
