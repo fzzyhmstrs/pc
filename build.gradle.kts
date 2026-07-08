@@ -46,6 +46,9 @@ neoForge {
 
 repositories {
     maven {
+        url = URI("https://repo.nyon.dev/releases")
+    }
+    maven {
         name = "FallenBreath"
         url = uri("https://maven.fallenbreath.me/releases")
     }
@@ -87,8 +90,10 @@ dependencies {
     val loaderVersion: String by project
     neoForge("net.neoforged:neoforge:$loaderVersion")*/
 
-    val kotlinForForgeVersion: String by project
-    runtimeOnly("thedarkcolour:kotlinforforge-neoforge:$kotlinForForgeVersion")
+    //val kotlinForForgeVersion: String by project
+    //runtimeOnly("thedarkcolour:kotlinforforge-neoforge:$kotlinForForgeVersion")
+    val klfVersion: String by project
+    runtimeOnly("dev.nyon:KotlinLangForge:$klfVersion")
 
     val fzzyConfigVersion: String by project
     implementation("me.fzzyhmstrs:fzzy_config:$fzzyConfigVersion+$minecraftVersion+neoforge"){
