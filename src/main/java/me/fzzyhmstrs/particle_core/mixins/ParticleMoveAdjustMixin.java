@@ -8,13 +8,12 @@ import me.fzzyhmstrs.particle_core.interfaces.BlockPosStorer;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -31,8 +30,8 @@ public class ParticleMoveAdjustMixin {
 
 	// TODO(Ravel): wildcard and regex target are not supported
 // TODO(Ravel): wildcard and regex target are not supported
-	@WrapOperation(method = "move(DDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;collideBoundingBox(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/AABB;Lnet/minecraft/world/level/Level;Ljava/util/List;)Lnet/minecraft/world/phys/Vec3;"), require = 0)
-	private Vec3 particle_core_optimizeOpenAirParticleCollisions(@Nullable Entity entity, Vec3 movement, AABB entityBoundingBox, Level world, List<VoxelShape> collisions, Operation<Vec3> original) {
+	@WrapOperation(method = "move(DDD)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;collideBoundingBox(Lnet/minecraft/world/phys/shapes/CollisionContext;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/AABB;Lnet/minecraft/world/level/Level;Ljava/util/List;)Lnet/minecraft/world/phys/Vec3;"), require = 0)
+	private Vec3 particle_core_optimizeOpenAirParticleCollisions(CollisionContext context, Vec3 movement, AABB entityBoundingBox, Level world, List<VoxelShape> collisions, Operation<Vec3> original) {
 		if (((BlockPosStorer)this).particle_core_getCachedEmpty()) {
 			AABB movedBox = entityBoundingBox.move(movement);
 			double fY = Mth.floor(y);
@@ -147,7 +146,7 @@ public class ParticleMoveAdjustMixin {
 				}
 			}
 		}
-		return original.call(entity, movement, entityBoundingBox, world, collisions);
+		return original.call(context, movement, entityBoundingBox, world, collisions);
 	}
 
 	@Unique
